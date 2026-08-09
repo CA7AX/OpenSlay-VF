@@ -1,0 +1,11 @@
+* @CA7AX
+
+/SPEC.md @CA7AX
+/SPEC.zh-CN.md @CA7AX
+/oracle.py @CA7AX
+/protocol.py @CA7AX
+/verifier.py @CA7AX
+/data/ @CA7AX
+/test-vectors/ @CA7AX
+/.github/workflows/ @CA7AX
+/tools/ @CA7AX

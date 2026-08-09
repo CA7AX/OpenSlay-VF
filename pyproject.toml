@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openslay-rng-verifier"
+dynamic = ["version"]
+description = "Independent verifier for OpenSlay randomness transcripts / OpenSlay 随机性策牒独立验证器"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "OpenSlay Contributors"}]
+dependencies = []
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7,<10"]
+release = ["build==1.5.0"]
+
+[project.urls]
+Homepage = "https://github.com/CA7AX/openslay_rng_verifier"
+Repository = "https://github.com/CA7AX/openslay_rng_verifier.git"
+Issues = "https://github.com/CA7AX/openslay_rng_verifier/issues"
+
+[project.scripts]
+openslay-rng-verify = "openslay_rng_verifier.cli:main"
+
+[tool.setuptools]
+packages = ["openslay_rng_verifier"]
+package-dir = {openslay_rng_verifier = "."}
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = {attr = "openslay_rng_verifier.__version__"}
+
+[tool.setuptools.package-data]
+openslay_rng_verifier = [
+  "data/*.json",
+  "test-vectors/*.json",
+  "README.md",
+  "README.zh-CN.md",
+  "SPEC.md",
+  "SPEC.zh-CN.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

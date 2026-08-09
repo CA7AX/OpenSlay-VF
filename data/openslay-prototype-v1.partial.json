@@ -1,0 +1,61 @@
+{
+  "allow_unlisted_purposes": true,
+  "format_version": 1,
+  "operation_rules": [
+    {
+      "deck_candidates": {
+        "card_count": 144,
+        "normalized_candidates_sha256": "8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39"
+      },
+      "operation": "shuffle",
+      "purpose_pattern": "deck\\.epoch\\.[1-9][0-9]*",
+      "rule_reference": "公开牌堆清单 · 原始牌堆"
+    },
+    {
+      "input_constraints": {
+        "denominator": {"equals": 8},
+        "numerator": {"maximum": 8, "minimum": 0}
+      },
+      "operation": "probability",
+      "purpose": "environment.flood.expire-before-bonus",
+      "rule_reference": "环境牌 · 决堤"
+    },
+    {
+      "input_constraints": {
+        "denominator": {"equals": 8},
+        "numerator": {"maximum": 8, "minimum": 0}
+      },
+      "operation": "probability",
+      "purpose": "environment.wildfire.expire-before-bonus",
+      "rule_reference": "环境牌 · 焚寨"
+    },
+    {
+      "input_constraints": {
+        "denominator": {"equals": 4},
+        "numerator": {"equals": 3}
+      },
+      "operation": "probability",
+      "purpose": "environment.headwind.skip-turn",
+      "rule_reference": "环境牌 · 逆风"
+    },
+    {
+      "input_constraints": {
+        "denominator": {"equals": 4},
+        "numerator": {"equals": 1}
+      },
+      "operation": "probability",
+      "purpose": "environment.thunder.self-damage",
+      "rule_reference": "环境牌 · 引雷"
+    },
+    {
+      "input_constraints": {
+        "candidates": {"equals": ["♥", "♦", "♠", "♣"]}
+      },
+      "operation": "choice",
+      "purpose": "virtual-card.suit",
+      "rule_reference": "虚拟牌 · 花色候选"
+    }
+  ],
+  "public_rules_hash": "51425268c309a0f6247ffdbabe3104d9734a77a3bec7eee4c4d439f3c94c3f45",
+  "ruleset_id": "openslay-prototype-v1-partial"
+}

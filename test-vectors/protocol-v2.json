@@ -1,0 +1,23 @@
+{
+  "derivation": {
+    "client_nonce": "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f",
+    "match_id": "match-示例-42",
+    "online_master_seed": "b87b585b84c8a32eed7a16f20717185ea2d3550071bbbeefb0e3fbeb96fa331b",
+    "player_contribution": "f3e3ae98b63f613b188ab20a3fe554e94cfb68fd7c6a37e0ea219dd10d3d8b2c",
+    "public_randomness_input": "42",
+    "ruleset_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+    "seat_id": 3,
+    "server_commitment": "f83d42ec75b155ac8089569770ce7988b204233ff1f15d0f9e746ebd02c98d41",
+    "server_secret": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+    "training_master_seed": "81a7273fdb1fe580c638a8f2b8f6f609414d399d3f5429f7a66ee874ca50e7da",
+    "training_numeric_seed": "-9223372036854775808",
+    "training_public_randomness_input": "雪"
+  },
+  "format_version": 2,
+  "hmac_stream": {
+    "block_hex": "2c0cd2af72f5a075ea0919c21fe34ae501f1c9216609da929b7409d68fcdc7a6",
+    "block_index": 0,
+    "context_digest": "7c2b9ec5020ebbd79fda5377e0f4788bea12473954b54a87137fb9f2d50a58a3",
+    "master_seed": "b87b585b84c8a32eed7a16f20717185ea2d3550071bbbeefb0e3fbeb96fa331b"
+  }
+}

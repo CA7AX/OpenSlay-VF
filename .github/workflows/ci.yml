@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: tests (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-24.04, python: "3.10"}
+          - {os: ubuntu-24.04, python: "3.11"}
+          - {os: ubuntu-24.04, python: "3.12"}
+          - {os: ubuntu-24.04, python: "3.13"}
+          - {os: ubuntu-24.04, python: "3.14"}
+          - {os: windows-latest, python: "3.10"}
+          - {os: windows-latest, python: "3.14"}
+          - {os: macos-latest, python: "3.14"}
+    steps:
+      - name: Check out the public verifier
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: Install the verifier and test dependencies
+        run: python -m pip install -e ".[test]"
+      - name: Audit the public source boundary
+        run: python tools/release_gate.py --mode ci
+      - name: Run standalone tests
+        run: python -m pytest -q
+      - name: Exercise both command-line entry points
+        run: |
+          python -m openslay_rng_verifier --version
+          openslay-rng-verify --version
+
+  package:
+    name: package
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the public verifier
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install release tooling
+        run: python -m pip install -e ".[test,release]"
+      - name: Audit source and run tests
+        run: |
+          python tools/release_gate.py --mode ci
+          python -m pytest -q
+      - name: Build twice from clean Git archives
+        run: python tools/build_release.py dist
+      - name: Audit and install the distributions
+        run: python tools/verify_artifacts.py dist
+      - name: Upload verified distributions
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: openslay-rng-verifier-dist
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+  required:
+    name: required
+    if: ${{ always() }}
+    needs: [tests, package]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require every CI gate
+        env:
+          TESTS_RESULT: ${{ needs.tests.result }}
+          PACKAGE_RESULT: ${{ needs.package.result }}
+        run: |
+          test "$TESTS_RESULT" = success
+          test "$PACKAGE_RESULT" = success

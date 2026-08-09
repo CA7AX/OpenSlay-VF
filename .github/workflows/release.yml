@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: verify, attest, and publish
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - name: Check out the exact public tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+          cache: pip
+      - name: Install release tooling
+        run: python -m pip install -e ".[test,release]"
+      - name: Verify the tag and public source boundary
+        id: gate
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python tools/release_gate.py --mode release --tag "$RELEASE_TAG" --github-output "$GITHUB_OUTPUT"
+      - name: Run standalone tests
+        run: python -m pytest -q
+      - name: Build twice from clean Git archives
+        run: python tools/build_release.py dist
+      - name: Audit and install the distributions
+        run: python tools/verify_artifacts.py dist
+      - name: Attest every release artifact
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: dist/*
+      - name: Upload verified distributions
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: openslay-rng-verifier-${{ github.ref_name }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 30
+      - name: Create draft prerelease with all assets
+        if: steps.gate.outputs.prerelease == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/* --draft --prerelease --verify-tag --generate-notes --title "$RELEASE_TAG"
+      - name: Create draft stable release with all assets
+        if: steps.gate.outputs.prerelease != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/* --draft --verify-tag --generate-notes --title "$RELEASE_TAG"
+      - name: Publish the complete draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release edit "$RELEASE_TAG" --draft=false

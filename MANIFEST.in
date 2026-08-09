@@ -1,0 +1,14 @@
+include CHANGELOG.md
+include CONTRIBUTING.md
+include LICENSE
+include PUBLIC_FILES.txt
+include README.md
+include README.zh-CN.md
+include RELEASING.md
+include SECURITY.md
+include SPEC.md
+include SPEC.zh-CN.md
+recursive-include data *.json
+recursive-include test-vectors *.json
+recursive-include tests *.py
+recursive-include tools *.py

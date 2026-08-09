@@ -1,0 +1,1014 @@
+{
+  "candidates": [
+    {
+      "card_id": 1,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 2,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 3,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 4,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 5,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 6,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 7,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 8,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 9,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 10,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 11,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 12,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 13,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 14,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 15,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 16,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 17,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 18,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 19,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 20,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 21,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 22,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 23,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 24,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 25,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 26,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 27,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 28,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 29,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 30,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 31,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 32,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 33,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 34,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 35,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 36,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 37,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 38,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 39,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 40,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 41,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♥"
+    },
+    {
+      "card_id": 42,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♣"
+    },
+    {
+      "card_id": 43,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♦"
+    },
+    {
+      "card_id": 44,
+      "category": "basic",
+      "info": {},
+      "name": "杀",
+      "suit": "♠"
+    },
+    {
+      "card_id": 45,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♥"
+    },
+    {
+      "card_id": 46,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♠"
+    },
+    {
+      "card_id": 47,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♦"
+    },
+    {
+      "card_id": 48,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♣"
+    },
+    {
+      "card_id": 49,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♥"
+    },
+    {
+      "card_id": 50,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♣"
+    },
+    {
+      "card_id": 51,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♦"
+    },
+    {
+      "card_id": 52,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♠"
+    },
+    {
+      "card_id": 53,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♥"
+    },
+    {
+      "card_id": 54,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♦"
+    },
+    {
+      "card_id": 55,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♠"
+    },
+    {
+      "card_id": 56,
+      "category": "basic",
+      "info": {},
+      "name": "闪",
+      "suit": "♣"
+    },
+    {
+      "card_id": 57,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♥"
+    },
+    {
+      "card_id": 58,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♠"
+    },
+    {
+      "card_id": 59,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♦"
+    },
+    {
+      "card_id": 60,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♣"
+    },
+    {
+      "card_id": 61,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♥"
+    },
+    {
+      "card_id": 62,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♣"
+    },
+    {
+      "card_id": 63,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♦"
+    },
+    {
+      "card_id": 64,
+      "category": "basic",
+      "info": {},
+      "name": "桃",
+      "suit": "♠"
+    },
+    {
+      "card_id": 65,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♥"
+    },
+    {
+      "card_id": 66,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♠"
+    },
+    {
+      "card_id": 67,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♦"
+    },
+    {
+      "card_id": 68,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♣"
+    },
+    {
+      "card_id": 69,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♥"
+    },
+    {
+      "card_id": 70,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♣"
+    },
+    {
+      "card_id": 71,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♦"
+    },
+    {
+      "card_id": 72,
+      "category": "basic",
+      "info": {},
+      "name": "怒",
+      "suit": "♠"
+    },
+    {
+      "card_id": 73,
+      "category": "control",
+      "info": {},
+      "name": "缴械",
+      "suit": "♥"
+    },
+    {
+      "card_id": 74,
+      "category": "control",
+      "info": {},
+      "name": "缴械",
+      "suit": "♠"
+    },
+    {
+      "card_id": 75,
+      "category": "control",
+      "info": {},
+      "name": "缴械",
+      "suit": "♦"
+    },
+    {
+      "card_id": 76,
+      "category": "control",
+      "info": {},
+      "name": "缴械",
+      "suit": "♣"
+    },
+    {
+      "card_id": 77,
+      "category": "control",
+      "info": {},
+      "name": "闭穴",
+      "suit": "♥"
+    },
+    {
+      "card_id": 78,
+      "category": "control",
+      "info": {},
+      "name": "闭穴",
+      "suit": "♠"
+    },
+    {
+      "card_id": 79,
+      "category": "control",
+      "info": {},
+      "name": "闭穴",
+      "suit": "♦"
+    },
+    {
+      "card_id": 80,
+      "category": "control",
+      "info": {},
+      "name": "闭穴",
+      "suit": "♣"
+    },
+    {
+      "card_id": 81,
+      "category": "control",
+      "info": {},
+      "name": "禁锢",
+      "suit": "♥"
+    },
+    {
+      "card_id": 82,
+      "category": "control",
+      "info": {},
+      "name": "禁锢",
+      "suit": "♠"
+    },
+    {
+      "card_id": 83,
+      "category": "control",
+      "info": {},
+      "name": "禁锢",
+      "suit": "♦"
+    },
+    {
+      "card_id": 84,
+      "category": "control",
+      "info": {},
+      "name": "禁锢",
+      "suit": "♣"
+    },
+    {
+      "card_id": 85,
+      "category": "control",
+      "info": {},
+      "name": "断粮",
+      "suit": "♥"
+    },
+    {
+      "card_id": 86,
+      "category": "control",
+      "info": {},
+      "name": "断粮",
+      "suit": "♠"
+    },
+    {
+      "card_id": 87,
+      "category": "control",
+      "info": {},
+      "name": "断粮",
+      "suit": "♦"
+    },
+    {
+      "card_id": 88,
+      "category": "control",
+      "info": {},
+      "name": "断粮",
+      "suit": "♣"
+    },
+    {
+      "card_id": 89,
+      "category": "control",
+      "info": {},
+      "name": "封术",
+      "suit": "♥"
+    },
+    {
+      "card_id": 90,
+      "category": "control",
+      "info": {},
+      "name": "封术",
+      "suit": "♠"
+    },
+    {
+      "card_id": 91,
+      "category": "control",
+      "info": {},
+      "name": "封术",
+      "suit": "♦"
+    },
+    {
+      "card_id": 92,
+      "category": "control",
+      "info": {},
+      "name": "封术",
+      "suit": "♣"
+    },
+    {
+      "card_id": 93,
+      "category": "disrupt",
+      "info": {},
+      "name": "探囊",
+      "suit": "♥"
+    },
+    {
+      "card_id": 94,
+      "category": "disrupt",
+      "info": {},
+      "name": "探囊",
+      "suit": "♠"
+    },
+    {
+      "card_id": 95,
+      "category": "disrupt",
+      "info": {},
+      "name": "探囊",
+      "suit": "♦"
+    },
+    {
+      "card_id": 96,
+      "category": "disrupt",
+      "info": {},
+      "name": "探囊",
+      "suit": "♣"
+    },
+    {
+      "card_id": 97,
+      "category": "disrupt",
+      "info": {},
+      "name": "摧锋",
+      "suit": "♥"
+    },
+    {
+      "card_id": 98,
+      "category": "disrupt",
+      "info": {},
+      "name": "摧锋",
+      "suit": "♠"
+    },
+    {
+      "card_id": 99,
+      "category": "disrupt",
+      "info": {},
+      "name": "摧锋",
+      "suit": "♦"
+    },
+    {
+      "card_id": 100,
+      "category": "disrupt",
+      "info": {},
+      "name": "摧锋",
+      "suit": "♣"
+    },
+    {
+      "card_id": 101,
+      "category": "disrupt",
+      "info": {},
+      "name": "离神",
+      "suit": "♥"
+    },
+    {
+      "card_id": 102,
+      "category": "disrupt",
+      "info": {},
+      "name": "离神",
+      "suit": "♠"
+    },
+    {
+      "card_id": 103,
+      "category": "disrupt",
+      "info": {},
+      "name": "离神",
+      "suit": "♦"
+    },
+    {
+      "card_id": 104,
+      "category": "disrupt",
+      "info": {},
+      "name": "离神",
+      "suit": "♣"
+    },
+    {
+      "card_id": 105,
+      "category": "buff",
+      "info": {},
+      "name": "丰仓",
+      "suit": "♥"
+    },
+    {
+      "card_id": 106,
+      "category": "buff",
+      "info": {},
+      "name": "丰仓",
+      "suit": "♠"
+    },
+    {
+      "card_id": 107,
+      "category": "buff",
+      "info": {},
+      "name": "丰仓",
+      "suit": "♦"
+    },
+    {
+      "card_id": 108,
+      "category": "buff",
+      "info": {},
+      "name": "丰仓",
+      "suit": "♣"
+    },
+    {
+      "card_id": 109,
+      "category": "buff",
+      "info": {},
+      "name": "回春",
+      "suit": "♥"
+    },
+    {
+      "card_id": 110,
+      "category": "buff",
+      "info": {},
+      "name": "回春",
+      "suit": "♠"
+    },
+    {
+      "card_id": 111,
+      "category": "buff",
+      "info": {},
+      "name": "回春",
+      "suit": "♦"
+    },
+    {
+      "card_id": 112,
+      "category": "buff",
+      "info": {},
+      "name": "回春",
+      "suit": "♣"
+    },
+    {
+      "card_id": 113,
+      "category": "buff",
+      "info": {},
+      "name": "免战",
+      "suit": "♥"
+    },
+    {
+      "card_id": 114,
+      "category": "buff",
+      "info": {},
+      "name": "免战",
+      "suit": "♠"
+    },
+    {
+      "card_id": 115,
+      "category": "buff",
+      "info": {},
+      "name": "免战",
+      "suit": "♦"
+    },
+    {
+      "card_id": 116,
+      "category": "buff",
+      "info": {},
+      "name": "免战",
+      "suit": "♣"
+    },
+    {
+      "card_id": 117,
+      "category": "counter",
+      "info": {},
+      "name": "看破",
+      "suit": "♥"
+    },
+    {
+      "card_id": 118,
+      "category": "counter",
+      "info": {},
+      "name": "看破",
+      "suit": "♠"
+    },
+    {
+      "card_id": 119,
+      "category": "counter",
+      "info": {},
+      "name": "看破",
+      "suit": "♦"
+    },
+    {
+      "card_id": 120,
+      "category": "counter",
+      "info": {},
+      "name": "看破",
+      "suit": "♣"
+    },
+    {
+      "card_id": 121,
+      "category": "environment",
+      "info": {},
+      "name": "决堤",
+      "suit": "♥"
+    },
+    {
+      "card_id": 122,
+      "category": "environment",
+      "info": {},
+      "name": "决堤",
+      "suit": "♠"
+    },
+    {
+      "card_id": 123,
+      "category": "environment",
+      "info": {},
+      "name": "决堤",
+      "suit": "♦"
+    },
+    {
+      "card_id": 124,
+      "category": "environment",
+      "info": {},
+      "name": "决堤",
+      "suit": "♣"
+    },
+    {
+      "card_id": 125,
+      "category": "environment",
+      "info": {},
+      "name": "焚寨",
+      "suit": "♥"
+    },
+    {
+      "card_id": 126,
+      "category": "environment",
+      "info": {},
+      "name": "焚寨",
+      "suit": "♠"
+    },
+    {
+      "card_id": 127,
+      "category": "environment",
+      "info": {},
+      "name": "焚寨",
+      "suit": "♦"
+    },
+    {
+      "card_id": 128,
+      "category": "environment",
+      "info": {},
+      "name": "焚寨",
+      "suit": "♣"
+    },
+    {
+      "card_id": 129,
+      "category": "environment",
+      "info": {},
+      "name": "逆风",
+      "suit": "♥"
+    },
+    {
+      "card_id": 130,
+      "category": "environment",
+      "info": {},
+      "name": "逆风",
+      "suit": "♠"
+    },
+    {
+      "card_id": 131,
+      "category": "environment",
+      "info": {},
+      "name": "逆风",
+      "suit": "♦"
+    },
+    {
+      "card_id": 132,
+      "category": "environment",
+      "info": {},
+      "name": "逆风",
+      "suit": "♣"
+    },
+    {
+      "card_id": 133,
+      "category": "environment",
+      "info": {},
+      "name": "引雷",
+      "suit": "♥"
+    },
+    {
+      "card_id": 134,
+      "category": "environment",
+      "info": {},
+      "name": "引雷",
+      "suit": "♠"
+    },
+    {
+      "card_id": 135,
+      "category": "environment",
+      "info": {},
+      "name": "引雷",
+      "suit": "♦"
+    },
+    {
+      "card_id": 136,
+      "category": "environment",
+      "info": {},
+      "name": "引雷",
+      "suit": "♣"
+    },
+    {
+      "card_id": 137,
+      "category": "horse",
+      "info": {},
+      "name": "+1马",
+      "suit": "♥"
+    },
+    {
+      "card_id": 138,
+      "category": "horse",
+      "info": {},
+      "name": "+1马",
+      "suit": "♠"
+    },
+    {
+      "card_id": 139,
+      "category": "horse",
+      "info": {},
+      "name": "+1马",
+      "suit": "♦"
+    },
+    {
+      "card_id": 140,
+      "category": "horse",
+      "info": {},
+      "name": "+1马",
+      "suit": "♣"
+    },
+    {
+      "card_id": 141,
+      "category": "horse",
+      "info": {},
+      "name": "-1马",
+      "suit": "♥"
+    },
+    {
+      "card_id": 142,
+      "category": "horse",
+      "info": {},
+      "name": "-1马",
+      "suit": "♠"
+    },
+    {
+      "card_id": 143,
+      "category": "horse",
+      "info": {},
+      "name": "-1马",
+      "suit": "♦"
+    },
+    {
+      "card_id": 144,
+      "category": "horse",
+      "info": {},
+      "name": "-1马",
+      "suit": "♣"
+    }
+  ],
+  "canonical_sha256": "8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39",
+  "card_count": 144
+}
