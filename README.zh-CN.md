@@ -107,6 +107,6 @@ print(witness.status, witness.short_fingerprint)
 
 ## 独立发布
 
-本目录本身就是一个完整的 Python 项目，包含包元数据、MIT 许可证、协议规范、测试、公开数据和命令行入口。可以在不包含 OpenSlay 游戏包的环境中单独构建并安装 wheel。`test-vectors/` 中的 `server_secret`、nonce 与规则集哈希均为公开的合成测试材料，并非实际部署凭据。
+本目录本身就是一个完整的 Python 项目，包含包元数据、BSD-3-Clause 许可证、协议规范、测试、公开数据和命令行入口。可以在不包含 OpenSlay 游戏包的环境中单独构建并安装 wheel。`test-vectors/` 中的 `server_secret`、nonce 与规则集哈希均为公开的合成测试材料，并非实际部署凭据。
 
 所有 `0.x` 版本均为开发预发布。发布稳定的 `1.0` 版本前，应发布完整的规则描述文件，并将其哈希绑定到游戏策牒中。

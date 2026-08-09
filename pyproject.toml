@@ -8,12 +8,12 @@ dynamic = ["version"]
 description = "Independent verifier for OpenSlay randomness transcripts / OpenSlay 随机性策牒独立验证器"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = {text = "BSD-3-Clause"}
 authors = [{name = "OpenSlay Contributors"}]
 dependencies = []
 classifiers = [
   "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: BSD License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
 ]

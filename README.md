@@ -128,9 +128,10 @@ random purpose has a stable public description.
 
 ## Standalone distribution
 
-This directory is a complete Python project with its own package metadata, MIT
-license, specification, tests, public data, and console entry point. A wheel can
-be built from this directory alone and installed without any OpenSlay package.
+This directory is a complete Python project with its own package metadata,
+BSD-3-Clause license, specification, tests, public data, and console entry
+point. A wheel can be built from this directory alone and installed without
+any OpenSlay package.
 The `server_secret`, nonce, and ruleset hash in `test-vectors/` are synthetic,
 public fixtures rather than deployed credentials.
 

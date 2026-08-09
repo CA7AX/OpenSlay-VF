@@ -91,8 +91,11 @@ def audit_wheel(wheel: Path, version: str) -> None:
             fail("wheel version differs from __version__")
         if metadata.get("Requires-Python") != ">=3.10":
             fail("wheel Requires-Python differs from the public contract")
-        if metadata.get("License-Expression") != "MIT" and metadata.get("License") != "MIT":
-            fail("wheel license metadata is not MIT")
+        if (
+            metadata.get("License-Expression") != "BSD-3-Clause"
+            and metadata.get("License") != "BSD-3-Clause"
+        ):
+            fail("wheel license metadata is not BSD-3-Clause")
         if set(metadata.get_all("Provides-Extra", [])) != {"release", "test"}:
             fail("wheel optional dependency groups differ from the release contract")
         if set(metadata.get_all("Requires-Dist", [])) != EXPECTED_OPTIONAL_DEPENDENCIES:
