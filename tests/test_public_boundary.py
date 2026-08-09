@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import importlib.util
 import json
 import re
 from pathlib import Path
@@ -17,6 +18,16 @@ PROTOCOL_V2_VECTOR_SHA256 = "1db756ddcaa67cabe624f694203bf3e5ca516cd630c6aeda16c
 
 def is_forbidden(module: str) -> bool:
     return any(module == name or module.startswith(f"{name}.") for name in FORBIDDEN_MODULES)
+
+
+def test_repository_init_supports_top_level_test_collection() -> None:
+    spec = importlib.util.spec_from_file_location("__init__", ROOT / "__init__.py")
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    module.__package__ = ""
+    spec.loader.exec_module(module)
+
+    assert module.__version__ == openslay_rng_verifier.__version__
 
 
 def test_public_runtime_never_imports_private_game_modules() -> None:
