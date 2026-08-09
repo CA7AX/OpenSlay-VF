@@ -23,9 +23,9 @@ test = ["pytest>=7,<10"]
 release = ["build==1.5.0"]
 
 [project.urls]
-Homepage = "https://github.com/CA7AX/openslay_rng_verifier"
-Repository = "https://github.com/CA7AX/openslay_rng_verifier.git"
-Issues = "https://github.com/CA7AX/openslay_rng_verifier/issues"
+Homepage = "https://github.com/CA7AX/OpenSlay-VF"
+Repository = "https://github.com/CA7AX/OpenSlay-VF.git"
+Issues = "https://github.com/CA7AX/OpenSlay-VF/issues"
 
 [project.scripts]
 openslay-rng-verify = "openslay_rng_verifier.cli:main"

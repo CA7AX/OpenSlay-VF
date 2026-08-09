@@ -3,7 +3,7 @@
 Please do not disclose suspected verifier vulnerabilities in a public issue.
 Use GitHub's private vulnerability-reporting form for this repository:
 
-https://github.com/CA7AX/openslay_rng_verifier/security/advisories/new
+https://github.com/CA7AX/OpenSlay-VF/security/advisories/new
 
 Include the affected package and protocol versions, a minimal synthetic
 transcript or vector, the expected result, and the observed result. Do not
