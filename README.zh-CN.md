@@ -1,112 +1,201 @@
-# openslay-rng-verifier
+<p align="center">
+  <img src="https://raw.githubusercontent.com/CA7AX/OpenSlay-VF/main/assets/openslay-water-ink-poster.png" alt="OpenSlay 水墨横幅：Without verification comes no fairness." width="100%">
+</p>
 
-[English](README.md) | 简体中文
+<h1 align="center">OpenSlay 随机性验证器</h1>
 
-这是一个独立、仅依赖 Python 标准库的 OpenSlay 随机性策牒生成与验证工具。
+<p align="center"><em>Without verification comes no fairness.</em></p>
 
-本库不包含游戏引擎、角色实现、服务器、匹配系统、界面或私有构建源码。它只验证公开协议中的下列内容：
+<p align="center">
+  独立于私有游戏引擎、仅依赖 Python 标准库的 OpenSlay 随机性策牒生成与验证工具。
+</p>
 
-1. 开局前的服务器承诺与玩家贡献；
-2. 每一次与游戏状态绑定的 HMAC-SHA256 随机操作及其证明；
-3. 操作前规范状态与上下文摘要、各用途计数器、全局操作顺序以及策牒哈希链；
-4. 终局公开材料与最终审计哈希；
-5. 可选的本机 `randomness_witness` 见证侧册；
-6. 可选的公开数据规则描述文件，用于核对随机操作的输入。
+<p align="center">
+  <a href="https://github.com/CA7AX/OpenSlay-VF/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/CA7AX/OpenSlay-VF/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="Python 3.10+" src="https://img.shields.io/badge/Python-3.10%2B-355f52?logo=python&logoColor=white">
+  <img alt="运行时依赖：0" src="https://img.shields.io/badge/runtime%20dependencies-0-355f52">
+  <a href="LICENSE"><img alt="BSD-3-Clause" src="https://img.shields.io/badge/license-BSD--3--Clause-8d3b2f"></a>
+</p>
 
-协议细节见 [SPEC.zh-CN.md](SPEC.zh-CN.md)。
+<p align="center">
+  <a href="README.md">English</a> ·
+  <strong>简体中文</strong> ·
+  <a href="SPEC.zh-CN.md">协议规范</a> ·
+  <a href="CONTRIBUTING.md">参与贡献</a> ·
+  <a href="SECURITY.md">安全策略</a>
+</p>
 
-此包自行实现协议编码、有界 HMAC 数据流、随机操作语义、通用随机预言机、策牒验证、本机见证核对、命令行界面及公开数据。它从不导入 OpenSlay 游戏引擎。应用在创建通用随机预言机时必须明确提供规则集哈希。
+<p align="center">
+  <a href="#overview">概览</a> ·
+  <a href="#scope">验证边界</a> ·
+  <a href="#quick-start">快速开始</a> ·
+  <a href="#flow">验证流程</a> ·
+  <a href="#results">结果语义</a> ·
+  <a href="#python-api">Python API</a> ·
+  <a href="#code-map">代码地图</a>
+</p>
 
-## 从本仓库安装并运行
+<a id="overview"></a>
 
-本仓库根目录同时也是 Python 包目录。调用模块或命令行入口前，请先以
-editable 模式安装：
+## 从“相信”走向“可复核”
+
+OpenSlay-VF 读取终局随机性策牒，独立重算承诺、种子派生、每一次随机操作及其哈希链。验证者不需要 OpenSlay 私有源码，也不需要接触部署凭据或玩家的原始私密 nonce。
+
+| 可复现 | 可追踪 | 相互独立 | 轻量运行 |
+| --- | --- | --- | --- |
+| 从公开终局材料重放随机操作 | 每一步绑定状态、上下文与顺序 | 运行时从不导入私有游戏引擎 | Python 3.10+，零第三方运行时依赖 |
+
+协议编码、有界 HMAC 数据流、语义随机操作、通用随机预言机、策牒验证、本机见证核对、命令行界面与公开数据均由本仓库维护。完整协议见 [SPEC.zh-CN.md](SPEC.zh-CN.md)。应用创建通用随机预言机时，必须明确提供规则集哈希。
+
+> [!WARNING]
+> 所有 `0.x` 版本均为开发预发布，协议、报告格式与公开规则覆盖面仍可能演进。随包提供的原型规则描述文件明确为**部分（Partial）**；稳定的 `1.0` 版本要求完整规则描述文件，并将其哈希绑定进游戏策牒。
+
+<a id="scope"></a>
+
+## 它验证什么，又不证明什么
+
+| 能验证 | 不证明 |
+| --- | --- |
+| 开局前服务器承诺与玩家贡献的结构、顺序和终局公开材料是否相合 | 服务器秘密或玩家 nonce 的熵质量，以及参与方本身是否诚实 |
+| 每次状态绑定的 HMAC-SHA256 随机操作、证明和结果能否独立重算 | 私有事件引擎是否正确执行了全部非随机游戏规则 |
+| 规范化的操作前状态/上下文摘要、用途计数器、全局操作顺序及策牒哈希链 | 规则设计是否平衡、比赛是否完整结束，或游戏整体公平性 |
+| 终局公开材料、操作总数与最终审计哈希是否一致 | 所有客户端在实时过程中是否收到同一份历史 |
+| 可选 `randomness_witness` 是否与本机保存的逐步检查点一致 | 单个本机见证之外其他玩家实际看到的内容 |
+| 可选公开数据规则描述文件中已列出的随机输入是否匹配 | **部分**描述文件尚未列出的用途是否符合规则 |
+
+`Complete` 本机见证只说明终局策牒与这一客户端在对局中保存的内容一致。玩家可以比较完整终局审计哈希或五组短印，以发现彼此不同的终局历史；这仍不等同于证明所有客户端收到过相同的实时事件流。
+
+本仓库不包含游戏引擎、角色实现、服务器、匹配系统、界面或私有构建源码，也不会导入 `openslay`、`openslay_server` 或 `game_mode`。
+
+<a id="quick-start"></a>
+
+## 快速开始
 
 ```bash
+git clone https://github.com/CA7AX/OpenSlay-VF.git
+cd OpenSlay-VF
 python -m pip install -e .
 openslay-rng-verify --version
+openslay-rng-verify /path/to/match.jsonl
 ```
+
+常用组合：
 
 ```bash
-python -m openslay_rng_verifier /path/to/match.jsonl
-python -m openslay_rng_verifier /path/to/transcript.json --json
-python -m openslay_rng_verifier /path/to/match.jsonl \
+# 稳定的机器可读 JSON
+openslay-rng-verify /path/to/transcript.json --json
+
+# 同时交叉核对本机见证侧册
+openslay-rng-verify /path/to/match.jsonl \
   --witness /path/to/randomness_witness/<match-hash>.jsonl
-python -m openslay_rng_verifier /path/to/match.jsonl --rules bundled
-python -m openslay_rng_verifier /path/to/match.jsonl --language zh
-python -m openslay_rng_verifier /path/to/match.jsonl --language en
+
+# 同时核对随包公开规则（当前为部分描述）
+openslay-rng-verify /path/to/match.jsonl --rules bundled
+
+# 选择人类可读报告语言
+openslay-rng-verify /path/to/match.jsonl --language zh
+openslay-rng-verify /path/to/match.jsonl --language en
 ```
 
-`openslay-rng-verify` 命令行入口接受相同参数。
+也可以使用 `python -m openslay_rng_verifier`，参数完全相同。人类可读报告默认中英双语；`--json` 不受语言选项影响，机器可读字段名与状态值保持稳定。
 
-人类可读的命令行报告默认同时显示中文和英文。可以使用 `--language bilingual`、`--language zh` 或 `--language en` 选择显示语言。`--json` 不受语言选项影响，机器可读字段名和状态值保持稳定。
+策牒参数支持完整游戏 JSONL 回放、包含 `records` 的紧凑 JSON 对象、策牒记录 JSON 列表，或一个包含回放的目录（自动选择最新的可识别策牒）。
 
-退出码：完整完成所请求的验证时为 `0`；数据无效或相互冲突时为 `1`；数据不完整、未验证、仅部分验证或缺失时为 `2`。
+<a id="flow"></a>
 
-策牒参数可以是：
+## 五步验证流程
 
-- 完整游戏 JSONL 回放；
-- 包含 `records` 的紧凑 JSON 对象；
-- 策牒记录组成的 JSON 列表；
-- 一个目录，此时会选择其中最新的可识别策牒。
+1. **严格读取**：解析 JSONL 或紧凑 JSON，拒绝重复键、非有限数字、非法 UTF-8 与不规范结构，并区分损坏和末尾截断。
+2. **核对开局材料**：验证模式、协议版本、规则集哈希与收据结构；在线模式检查承诺先于贡献，训练模式检查公开种子的规范表达。
+3. **重建主种子**：在线模式用终局公开的服务器秘密与有效玩家贡献重新派生；训练模式用声明的数值种子与公开随机性输入重新派生。
+4. **逐项重放**：重算每个 `probability`、`choice`、`sample` 或 `shuffle` 操作，并核对结果、证明、状态/上下文摘要、用途计数器、全局顺序、牌堆 epoch 与连续审计哈希。
+5. **封存结论**：核对终局公开材料、操作总数和最终审计哈希，再按需交叉核对本机见证与公开规则描述文件，生成稳定状态和退出码。
+
+```text
+策牒输入 → 开局承诺/种子 → 逐项重放 → 审计哈希链 → 终局 + 见证 + 规则报告
+```
+
+<a id="results"></a>
+
+## 结果与退出码
+
+主验证状态保持英文不变，便于脚本稳定消费：
+
+| 状态 | 含义 | 退出码 |
+| --- | --- | :---: |
+| `Verified fair` | 在线随机性收据在协议假设内通过；不是对整场游戏公平性的认证 | `0` |
+| `Verified deterministic` | 训练对局可由声明的种子和公开输入精确复现 | `0` |
+| `Invalid` | 数据无效、冲突、被篡改，或无法满足协议约束 | `1` |
+| `Incomplete` | 公开材料、终局揭示或所请求的检查点尚不完整 | `2` |
+| `Unverified` | 旧式仅种子日志、已弃用/未验证随机源，或缺少可验证清单 | `2` |
+
+可选层使用各自的稳定状态：本机见证为 `Complete`、`Missing`、`Incomplete`、`Invalid`；公开规则为 `Verified`、`Partial`、`Not checked`、`Invalid`。`Partial` 表示已描述的随机操作均匹配，但描述文件有意允许尚未列出的用途。
+
+命令行会合并所有已请求检查的退出码：任一检查为 `1`，整体返回 `1`；否则任一检查为 `2`，整体返回 `2`；只有所有已请求检查都完整通过时才返回 `0`。
+
+<a id="python-api"></a>
 
 ## Python API
 
 ```python
-from openslay_rng_verifier import load_transcript, verify_records
+from openslay_rng_verifier import (
+    format_human_report,
+    load_transcript,
+    verify_records,
+)
 
 records, resolved_path = load_transcript("match.jsonl")
 report = verify_records(records)
+
 print(report.status, report.final_audit_hash)
-```
-
-需要面向用户显示双语报告时，可以在不改变原始报告对象的情况下使用：
-
-```python
-from openslay_rng_verifier import format_human_report
-
 print(format_human_report(report, language="bilingual"))
 ```
 
-核对本机见证侧册：
+本机见证与公开规则是独立的可选检查：
 
 ```python
-from openslay_rng_verifier import load_witness, verify_witness
+from openslay_rng_verifier import (
+    load_ruleset,
+    load_witness,
+    verify_declared_rules,
+    verify_witness,
+)
 
 header, checkpoints = load_witness("witness.jsonl")
 witness = verify_witness(header, checkpoints, records)
+
+rules = verify_declared_rules(report, load_ruleset("bundled"))
 print(witness.status, witness.short_fingerprint)
+print(rules.status, rules.descriptor_hash)
 ```
 
-## 验证结果的含义
+<a id="code-map"></a>
 
-- `验策相合 / Verified fair`：在线模式的服务器承诺、玩家贡献、终局公开材料和全部随机操作均通过验证。
-- `定策可验 / Verified deterministic`：训练模式对局可以根据其声明的种子和公开输入精确复现。
-- `完整 / Complete` 本机见证：终局策牒与本机在游戏过程中保存的每一个检查点一致。
-- `部分验证 / Partial` 公开规则：已描述的随机操作均匹配，但所提供的公开描述文件有意允许尚未描述的用途。
+## 代码库地图
 
-本机见证只能证明终局策牒与该客户端在游戏中所见的内容一致，不能证明所有客户端都收到了同一份实时历史。玩家可以比较完整终局审计哈希或五组短印，以发现彼此不同的终局历史。
+| 路径 | 职责 |
+| --- | --- |
+| `protocol.py` | 规范 JSON、域分隔摘要、承诺与种子派生、协议约束 |
+| `oracle.py` · `operations.py` | 通用随机预言机、有界 HMAC 数据流与四类语义随机操作 |
+| `verifier.py` | 策牒加载、结构检查、逐项重放与主验证报告 |
+| `witness.py` | 追加式本机见证侧册加载、检查点核对与短印 |
+| `rules.py` · `data/` | 数据化公开规则核对、原型牌堆与**部分**规则描述文件 |
+| `cli.py` · `localization.py` | 命令行入口、稳定 JSON 和中英双语人类报告 |
+| `test-vectors/` · `tests/` | 固定协议向量、篡改测试、边界与独立性回归测试 |
+| `tools/` · `.github/workflows/` | 公共文件边界、构建/产物审计、CI 与发布门禁 |
 
-## 不公开引擎源码的规则核对
+<a id="development"></a>
 
-玩家可以人工比较策牒中的 `purpose` 和 `inputs` 与公开卡牌或技能说明。程序也可以使用公开描述文件里的 `operation_rules` 自动核对，例如：
+## 开发、发布与安全
 
-```json
-{
-  "operation": "probability",
-  "purpose": "environment.thunder.self-damage",
-  "input_constraints": {
-    "numerator": {"equals": 1},
-    "denominator": {"equals": 4}
-  },
-  "rule_reference": "环境牌 · 引雷"
-}
+```bash
+python -m pip install -e ".[test]"
+python tools/release_gate.py --mode ci
+python -m pytest -q
 ```
 
-这里公开的是规则和概率，而不是实现这些规则的事件引擎。在每个随机用途都有稳定的公开说明之前，随包提供的原型规则描述文件明确标记为“部分”。
+贡献须同时维护公开协议、验证器与不可变测试向量；凡改变规范字节、摘要输入、可接受策牒结构、随机操作语义或域分隔标签的修改，都必须升级协议或算法版本。详细约定见 [CONTRIBUTING.md](CONTRIBUTING.md)，发布流程见 [RELEASING.md](RELEASING.md)。
 
-## 独立发布
+请勿在公开 issue 中披露验证器漏洞，也不要提交真实对局策牒、本机见证、客户端 nonce、凭据、私有 OpenSlay 源码、本机路径或专有资源。请按 [SECURITY.md](SECURITY.md) 使用 GitHub 私密漏洞报告。`test-vectors/` 中的 `server_secret`、nonce 与规则集哈希都是公开的合成测试材料，不是部署凭据。
 
-本目录本身就是一个完整的 Python 项目，包含包元数据、BSD-3-Clause 许可证、协议规范、测试、公开数据和命令行入口。可以在不包含 OpenSlay 游戏包的环境中单独构建并安装 wheel。`test-vectors/` 中的 `server_secret`、nonce 与规则集哈希均为公开的合成测试材料，并非实际部署凭据。
-
-所有 `0.x` 版本均为开发预发布。发布稳定的 `1.0` 版本前，应发布完整的规则描述文件，并将其哈希绑定到游戏策牒中。
+本项目采用 [BSD-3-Clause](LICENSE) 许可证。

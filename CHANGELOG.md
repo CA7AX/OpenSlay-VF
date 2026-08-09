@@ -3,6 +3,14 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
+## Unreleased
+
+- Adopt the water-ink OpenSlay emblem and a new verifier README hero.
+- Reorganize the English and Chinese project guides around verification scope,
+  protocol flow, result semantics, and public code ownership.
+- Extend the source boundary gate with strict, exact-path PNG validation for
+  the two public brand assets.
+
 ## 0.2.1 - 2026-08-09
 
 - Bootstrap the verifier as an independently maintained public repository.

@@ -18,6 +18,8 @@ SPEC.md
 SPEC.zh-CN.md
 __init__.py
 __main__.py
+assets/openslay-water-ink-logo.png
+assets/openslay-water-ink-poster.png
 cli.py
 data/openslay-prototype-v1.partial.json
 data/prototype-deck-v1.json
