@@ -2,50 +2,105 @@
   <img src="https://raw.githubusercontent.com/CA7AX/OpenSlay-VF/main/assets/openslay-water-ink-poster.png" alt="OpenSlay water-ink emblem — Without verification comes no fairness." width="100%">
 </p>
 
-# OpenSlay-VF
+<h1 align="center">⚔️ OpenSlay-VF ⚔️</h1>
 
 <p align="center">
-  <strong>Independent verification for OpenSlay randomness transcripts.</strong>
+  <strong>Don't trust. Recompute.</strong><br/>
+  <sub>Independent, zero-dependency verification for OpenSlay randomness transcripts —<br/>
+  from the pre-game commitment to the terminal audit hash.</sub>
 </p>
 
 <p align="center">
   <a href="https://github.com/CA7AX/OpenSlay-VF/actions/workflows/ci.yml"><img src="https://github.com/CA7AX/OpenSlay-VF/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
+  <img src="https://img.shields.io/badge/runtime%20dependencies-0-2ea44f" alt="Zero runtime dependencies">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-BSD--3--Clause-59636e.svg" alt="BSD-3-Clause license"></a>
   <a href="SPEC.md"><img src="https://img.shields.io/badge/protocol-v2-9B3A32" alt="Protocol v2"></a>
 </p>
 
 <p align="center">
-  <a href="#quick-start">Quick start</a> ·
-  <a href="#what-it-verifies">Scope</a> ·
-  <a href="#how-verification-works">Protocol flow</a> ·
+  <img src="https://img.shields.io/badge/Linux-supported-1f6feb?logo=linux&logoColor=white" alt="Linux">
+  <img src="https://img.shields.io/badge/macOS-supported-1f6feb?logo=apple&logoColor=white" alt="macOS">
+  <img src="https://img.shields.io/badge/Windows-supported-1f6feb?logo=windows&logoColor=white" alt="Windows">
+  <img src="https://img.shields.io/badge/reports-%E4%B8%AD%20%2F%20EN%20bilingual-8d3b2f" alt="Bilingual reports">
+  <img src="https://img.shields.io/badge/private%20engine%20imports-none-black" alt="No private engine imports">
+</p>
+
+<p align="center">
+  <a href="#-quick-start">Quick start</a> ·
+  <a href="#-what-it-verifies">Scope</a> ·
+  <a href="#-how-verification-works">Protocol flow</a> ·
+  <a href="#-python-api">Python API</a> ·
   <a href="SPEC.md">Specification</a> ·
   <a href="SECURITY.md">Security</a> ·
   <a href="README.zh-CN.md">简体中文</a>
 </p>
 
-> **Without verification comes no fairness.**
->
-> OpenSlay-VF independently recomputes OpenSlay randomness transcripts—from
-> the pre-game commitment to the terminal audit hash—without importing the
-> private game engine and without runtime dependencies.
+---
+
+<p align="center">
+  <strong>「 Without verification comes no fairness. 」</strong><br/>
+  <sub>不经验证，无以言公。</sub>
+</p>
+
+OpenSlay-VF takes the randomness transcript a match leaves behind and
+**replays every single random operation from scratch** — commitments, seed
+derivation, HMAC stream, hash chain, terminal reveal — without importing the
+private game engine, without runtime dependencies, and without ever touching a
+deployed secret. If the published evidence doesn't recompute, the transcript
+doesn't pass. It's that simple.
+
+```console
+$ openslay-rng-verify /path/to/match.jsonl --rules bundled
+
+OpenSlay 随机性验证报告 / OpenSlay Randomness Verification Report
+验证状态 / Verification status: 验策相合 / Verified fair
+随机操作数 / Random operations: 312
+已验证牌堆纪元 / Deck epochs verified: 2
+终局审计哈希 / Final audit hash: 9f2c…e41a
+
+公开规则 / Public rules: 已验证 / Verified
+
+$ echo $?
+0
+```
 
 > [!IMPORTANT]
-> Verification establishes transcript consistency under the assumptions in
+> Verification establishes **transcript consistency** under the assumptions in
 > [the protocol specification](SPEC.md). It does **not** certify entropy,
 > server honesty, legal game-state transitions, match completion, or overall
-> game fairness.
+> game fairness. Precision about limits is a feature, not a disclaimer.
 
-## What it verifies
+## 🧭 What it verifies
 
-| The public evidence it recomputes | What it deliberately does not prove |
-| --- | --- |
-| Server commitment and player contributions | The quality of the original entropy or the server's honesty |
-| Online and deterministic-training seed derivation | The legality of transitions between recorded game states |
-| State-bound HMAC-SHA256 results and proofs | That every client received the same live history |
-| `probability`, `choice`, `sample`, and `shuffle` operations | The correctness or completeness of every game rule |
-| State/context digests, purpose counters, global order, hash chain, reveal, and final audit hash | Match completion or fairness outside the published randomness protocol |
-| Optional local-witness consistency and public rule-input constraints | Private engine, character, server, matchmaking, or UI behavior |
+<table>
+<tr>
+<th>✅ The public evidence it recomputes</th>
+<th>🚫 What it deliberately does not prove</th>
+</tr>
+<tr>
+<td>
+
+- Server commitment and player contributions
+- Online and deterministic-training seed derivation
+- State-bound HMAC-SHA256 results and proofs
+- `probability`, `choice`, `sample`, and `shuffle` operations
+- State/context digests, purpose counters, global order, hash chain, reveal, and final audit hash
+- Optional local-witness consistency and public rule-input constraints
+
+</td>
+<td>
+
+- The quality of the original entropy or the server's honesty
+- The legality of transitions between recorded game states
+- That every client received the same live history
+- The correctness or completeness of every game rule
+- Match completion or fairness outside the published randomness protocol
+- Private engine, character, server, matchmaking, or UI behavior
+
+</td>
+</tr>
+</table>
 
 The package owns the public encodings, bounded HMAC stream, semantic random
 operations, generic oracle, transcript verifier, witness checks, bilingual
@@ -53,9 +108,24 @@ reporting, CLI, and public data. It never imports the OpenSlay engine. An
 application constructing the generic oracle must supply an explicit ruleset
 hash.
 
-## Quick start
+<table align="center">
+<tr>
+<th>🔁 Reproducible</th>
+<th>🔗 Traceable</th>
+<th>🧱 Independent</th>
+<th>🪶 Lightweight</th>
+</tr>
+<tr>
+<td>Replays random operations from public terminal material</td>
+<td>Every step bound to state, context, and sequence</td>
+<td>Never imports the private game engine at runtime</td>
+<td>Python 3.10+, zero third-party runtime dependencies</td>
+</tr>
+</table>
 
-OpenSlay-VF requires Python 3.10 or newer and has no runtime dependencies.
+## 🚀 Quick start
+
+OpenSlay-VF requires Python 3.10 or newer and has **no runtime dependencies**.
 
 ```bash
 git clone https://github.com/CA7AX/OpenSlay-VF.git
@@ -85,7 +155,7 @@ status values.
 | `1` | Data is invalid or internally conflicting |
 | `2` | Evidence is incomplete, unverified, partial, or missing |
 
-## How verification works
+## 🔬 How verification works
 
 ```mermaid
 flowchart LR
@@ -117,7 +187,7 @@ consistency with that client's observed history; it cannot prove that every
 client saw the same history. Players can compare the full final audit hash—or
 the five-group short seal—to detect divergent terminal histories.
 
-## Reading the result
+## 📜 Reading the result
 
 | Transcript status | Meaning |
 | --- | --- |
@@ -132,7 +202,7 @@ or `Invalid`). Public rule checks are also separate (`Verified`, `Partial`,
 `Invalid`, or `Not checked`), so a successful cryptographic transcript check
 is never silently expanded into a broader rules claim.
 
-## Python API
+## 🐍 Python API
 
 ```python
 from openslay_rng_verifier import load_transcript, verify_records
@@ -160,7 +230,7 @@ rules = verify_declared_rules(report, load_ruleset("bundled"))
 Use `format_human_report(..., language="bilingual")` for the same bilingual
 presentation as the CLI without changing the underlying report objects.
 
-## Codebase map
+## 🗺️ Codebase map
 
 | Path | Responsibility |
 | --- | --- |
@@ -178,7 +248,7 @@ is a complete standalone Python project: no game engine, character
 implementation, server, matchmaking system, UI, or private build source is
 included.
 
-## Development and release gates
+## 🛡️ Development and release gates
 
 ```bash
 python -m pip install -e ".[test,release]"
@@ -196,9 +266,15 @@ Please follow [CONTRIBUTING.md](CONTRIBUTING.md) for patches and report
 suspected vulnerabilities through the private process in
 [SECURITY.md](SECURITY.md).
 
-## Release maturity and license
+## 📦 Release maturity and license
 
 All `0.x` versions are development prereleases. A stable `1.0` requires a
 complete public rules descriptor whose hash is bound into the game transcript.
 
 OpenSlay-VF is distributed under the [BSD 3-Clause License](LICENSE).
+
+---
+
+<p align="center">
+  <sub>⚔️ <strong>Without verification comes no fairness.</strong> 不经验证，无以言公。 ⚔️</sub>
+</p>
