@@ -17,7 +17,9 @@ before the game ships that verifier.
 5. Test the candidate public commit against the pinned private integration.
 6. Create a signed annotated tag whose name exactly matches the package version,
    for example `git tag -s v0.2.1`.
-7. Push only the public tag. The release workflow rebuilds and retests the tag,
+7. Confirm that private vulnerability reporting remains enabled and that its
+   private reporting form opens before publishing the tag.
+8. Push only the public tag. The release workflow rebuilds and retests the tag,
    attests the artifacts, creates a draft release with every asset, and then
    publishes it.
 
@@ -25,7 +27,8 @@ All `0.x` versions are marked as GitHub prereleases. A `v1+` release is blocked
 while the bundled descriptor filename/id/allow-list flag identify it as partial.
 Tags and published release assets must never be moved or replaced. Enable the
 repository's `main` and `v*` rulesets, read-only default Actions token, private
-vulnerability reporting, and immutable releases before the first tag.
+vulnerability reporting, and immutable releases before the first tag; keep
+those protections enabled for every later release.
 
 PyPI publishing is deliberately absent from the bootstrap workflow. If it is
 added later, use a separately protected environment and Trusted Publishing;

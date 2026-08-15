@@ -222,7 +222,7 @@ def verify_witness(
         )
     return _report(
         "Complete",
-        "三验俱合 · 本机所见，前后未改",
+        "All supplied checkpoints match the terminal transcript.",
         checkpoints=len(checkpoints),
         operation_count=len(operations),
         verification=verification,

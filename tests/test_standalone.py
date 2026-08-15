@@ -7,6 +7,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from openslay_rng_verifier import (
     VerificationReport,
     format_human_report,
@@ -22,6 +24,7 @@ from openslay_rng_verifier.protocol import (
     MAX_SAFE_JSON_INTEGER,
     RANDOMNESS_ALGORITHM,
     RANDOMNESS_FORMAT_VERSION,
+    RandomnessError,
     ZERO_AUDIT_HASH,
     derive_online_master_seed,
     derive_player_contribution,
@@ -31,7 +34,7 @@ from openslay_rng_verifier.protocol import (
     random_state_digest,
     transcript_record_hash,
 )
-from openslay_rng_verifier.verifier import recompute_operation
+from openslay_rng_verifier.verifier import read_jsonl_records, recompute_operation
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -225,7 +228,12 @@ def test_fixed_protocol_vectors() -> None:
     assert f"{block:064x}" == stream_value["block_hex"]
 
 
-def test_training_transcript_tamper_and_witness() -> None:
+def test_state_version_requires_a_json_integer() -> None:
+    with pytest.raises(RandomnessError, match="unsupported version"):
+        random_state_digest({"state_version": True, "kind": "test"})
+
+
+def test_training_transcript_tamper_and_witness(tmp_path: Path) -> None:
     records = _training_records()
     verification = verify_records(records)
     assert verification.status == "Verified deterministic"
@@ -234,6 +242,7 @@ def test_training_transcript_tamper_and_witness() -> None:
     header, checkpoints = _witness(records)
     witness = verify_witness(header, checkpoints, records)
     assert witness.status == "Complete"
+    assert witness.summary == "All supplied checkpoints match the terminal transcript."
     assert witness.short_fingerprint != "—"
 
     oversized_sequences = copy.deepcopy(records)
@@ -320,15 +329,29 @@ def test_training_transcript_tamper_and_witness() -> None:
         == "Invalid"
     )
 
-    interrupted_records = [
+    interrupted_path = tmp_path / "interrupted.jsonl"
+    interrupted_path.write_text(
+        "\n".join(json.dumps(record) for record in records[:-1])
+        + '\n{"record_type":"randomness_reveal"',
+        encoding="utf-8",
+    )
+    interrupted_records = read_jsonl_records(interrupted_path)
+    assert (
+        verify_witness(header, checkpoints, interrupted_records).status
+        == "Incomplete"
+    )
+
+    spoofed_marker = [
         *records,
         {
             "sequence": records[-1]["sequence"] + 1,
             "category": "randomness_truncated",
-            "context": {"detail": "recognized interrupted JSONL tail"},
+            "context": {"detail": "claimed interrupted JSONL tail"},
         },
     ]
-    assert verify_witness(header, checkpoints, interrupted_records).status == "Incomplete"
+    spoofed_report = verify_records(spoofed_marker)
+    assert spoofed_report.status == "Invalid"
+    assert "unsupported randomness record type" in spoofed_report.summary
 
     incomplete = verify_witness(header, checkpoints[:-1], records)
     assert incomplete.status == "Incomplete"
@@ -435,6 +458,94 @@ def test_source_checkout_cli(tmp_path: Path) -> None:
     assert "Verification status" not in chinese.stdout
     assert report["verification"]["reveal"]["final_audit_hash"] in chinese.stdout
 
+    compact_only = tmp_path / "compact-only"
+    compact_only.mkdir()
+    (compact_only / "transcript.json").write_text(
+        transcript.read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    directory_result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "openslay_rng_verifier",
+            str(compact_only),
+            "--json",
+        ],
+        cwd=ROOT.parent,
+        text=True,
+        encoding="utf-8",
+        errors="strict",
+        capture_output=True,
+        check=False,
+    )
+    assert directory_result.returncode == 1
+    assert json.loads(directory_result.stdout)["status"] == "Invalid"
+
+    truncated_compact = tmp_path / "truncated.json"
+    truncated_compact.write_text('{"records":[', encoding="utf-8")
+    compact_result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "openslay_rng_verifier",
+            str(truncated_compact),
+            "--json",
+        ],
+        cwd=ROOT.parent,
+        text=True,
+        encoding="utf-8",
+        errors="strict",
+        capture_output=True,
+        check=False,
+    )
+    assert compact_result.returncode == 1
+    assert json.loads(compact_result.stdout)["status"] == "Invalid"
+
+    truncated_jsonl = tmp_path / "truncated.jsonl"
+    truncated_jsonl.write_text(
+        "\n".join(json.dumps(record) for record in _training_records()[:-1])
+        + '\n{"record_type":"randomness_reveal"',
+        encoding="utf-8",
+    )
+    jsonl_result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "openslay_rng_verifier",
+            str(truncated_jsonl),
+            "--json",
+        ],
+        cwd=ROOT.parent,
+        text=True,
+        encoding="utf-8",
+        errors="strict",
+        capture_output=True,
+        check=False,
+    )
+    assert jsonl_result.returncode == 2
+    assert json.loads(jsonl_result.stdout)["verification"]["status"] == "Incomplete"
+
+    corrupt_jsonl = tmp_path / "corrupt.jsonl"
+    corrupt_jsonl.write_text("{not json\n", encoding="utf-8")
+    corrupt_result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "openslay_rng_verifier",
+            str(corrupt_jsonl),
+            "--json",
+        ],
+        cwd=ROOT.parent,
+        text=True,
+        encoding="utf-8",
+        errors="strict",
+        capture_output=True,
+        check=False,
+    )
+    assert corrupt_result.returncode == 1
+    assert json.loads(corrupt_result.stdout)["verification"]["status"] == "Invalid"
+
 
 def test_human_report_supports_bilingual_chinese_and_english() -> None:
     records = _training_records()
@@ -455,6 +566,8 @@ def test_human_report_supports_bilingual_chinese_and_english() -> None:
     assert "Verified deterministic: 2 random operations and 1 deck epoch(s) verified." in bilingual
     assert verification.final_audit_hash in bilingual
     assert "本机见证 / Local witness: 完整 / Complete" in bilingual
+    assert "此结果本身不证明这些检查点是在对局过程中保存的" in bilingual
+    assert "All supplied checkpoints match the terminal transcript." in bilingual
     assert "公开规则 / Public rules: 已验证 / Verified" in bilingual
 
     chinese = format_human_report(verification, language="zh")
@@ -501,6 +614,34 @@ def test_cli_help_is_bilingual() -> None:
     assert "Independently verify an OpenSlay randomness" in completed.stdout
     assert "transcript and optional local witness sidecar" in completed.stdout
     assert "--language {bilingual,zh,en}" in completed.stdout
+
+
+def test_cli_usage_errors_return_two() -> None:
+    commands = (
+        [sys.executable, "-m", "openslay_rng_verifier"],
+        [sys.executable, "-m", "openslay_rng_verifier", "missing.json", "--bogus"],
+        [
+            sys.executable,
+            "-m",
+            "openslay_rng_verifier",
+            "missing.json",
+            "--language",
+            "unsupported",
+        ],
+    )
+    for command in commands:
+        completed = subprocess.run(
+            command,
+            cwd=ROOT.parent,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            capture_output=True,
+            check=False,
+        )
+        assert completed.returncode == 2
+        assert completed.stdout == ""
+        assert completed.stderr.startswith("usage: openslay-rng-verify")
 
 
 def test_trial_tamper_never_mutates_input() -> None:

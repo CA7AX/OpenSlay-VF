@@ -46,20 +46,28 @@
 OpenSlay-VF takes the randomness transcript a match leaves behind and
 **replays every single random operation from scratch** — commitments, seed
 derivation, HMAC stream, hash chain, terminal reveal — without importing the
-private game engine, without runtime dependencies, and without ever touching a
-deployed secret. If the published evidence doesn't recompute, the transcript
-doesn't pass. It's that simple.
+private game engine or adding runtime dependencies. For an online match, the
+terminal transcript discloses the human client nonces and per-match server
+secret needed for recomputation; the verifier needs no separate nonce input or
+access to still-secret deployment credentials. If the published evidence
+doesn't recompute, the transcript doesn't pass. It's that simple.
+
+An abridged example follows; summary and detail lines are omitted, and hashes
+are shortened for display:
 
 ```console
 $ openslay-rng-verify /path/to/match.jsonl --rules bundled
 
 OpenSlay 随机性验证报告 / OpenSlay Randomness Verification Report
+[… transcript path omitted …]
 验证状态 / Verification status: 验策相合 / Verified fair
+[… verification summary omitted …]
 随机操作数 / Random operations: 312
 已验证牌堆纪元 / Deck epochs verified: 2
 终局审计哈希 / Final audit hash: 9f2c…e41a
 
 公开规则 / Public rules: 已验证 / Verified
+[… rule summary, count, and descriptor hash omitted …]
 
 $ echo $?
 0
@@ -144,16 +152,24 @@ python -m openslay_rng_verifier /path/to/match.jsonl --language zh
 ```
 
 The transcript argument may be a full game JSONL replay, a compact JSON object
-containing `records`, a JSON list of records, or a directory whose newest
-recognizable transcript should be selected. Human-readable output defaults to
-Chinese and English; `--json` keeps stable, language-neutral field names and
-status values.
+containing `records`, or a JSON list of records. A directory input is narrower:
+it searches recursively for game `*.jsonl` logs and selects the newest
+recognizable one; it does not discover compact `.json` transcripts. Only an
+unterminated final JSONL record can be classified as a truncated, incomplete
+write. Malformed or truncated compact JSON is invalid input. Human-readable
+output defaults to Chinese and English; `--json` keeps stable, language-neutral
+field names and status values.
 
 | Exit code | Meaning |
 | ---: | --- |
 | `0` | Every requested verification completed |
 | `1` | Data is invalid or internally conflicting |
 | `2` | Evidence is incomplete, unverified, partial, or missing |
+
+Before verification begins, `argparse` also returns exit code `2` for
+command-line usage errors such as a missing transcript argument, an unknown
+option, or an invalid option value. Those errors are written to standard error
+and do not represent an `Incomplete` or `Unverified` verification result.
 
 ## 🔬 How verification works
 
@@ -182,10 +198,16 @@ purposes remain outside that result.
 ### Local witness
 
 A `randomness_witness` sidecar cross-checks the terminal transcript against the
-checkpoints one client persisted during play. A complete witness proves
-consistency with that client's observed history; it cannot prove that every
-client saw the same history. Players can compare the full final audit hash—or
-the five-group short seal—to detect divergent terminal histories.
+supplied checkpoints. A `Complete` result proves equality with those supplied
+checkpoints only. Treating them as records persisted during play requires
+trusted, non-rewritable local provenance, and even then says nothing about what
+other clients saw. Players can compare the full 256-bit final audit hash for a
+hash-level comparison of the hash-bound randomness record contexts; it does not
+cover outer envelope metadata or arbitrary non-random game or UI history. The
+five-group short seal is only an
+80-bit prefix for convenient manual comparison: it can quickly expose many
+mismatches, but matching short seals do not establish equality of the full
+hashes.
 
 ## 📜 Reading the result
 
@@ -239,7 +261,7 @@ presentation as the CLI without changing the underlying report objects.
 | [`verifier.py`](verifier.py) | Transcript loading, validation, and independent recomputation |
 | [`witness.py`](witness.py) | Local checkpoint and short-seal cross-checking |
 | [`rules.py`](rules.py) | Data-only public rules descriptors and input constraints |
-| [`localization.py`](localization.py) | Chinese, English, bilingual, and machine-readable reporting |
+| [`cli.py`](cli.py) / [`localization.py`](localization.py) | CLI entry point, stable JSON, and Chinese, English, or bilingual human-readable reporting |
 | [`SPEC.md`](SPEC.md) / [`SPEC.zh-CN.md`](SPEC.zh-CN.md) | Normative public protocol |
 | [`test-vectors/`](test-vectors) | Synthetic, public protocol fixtures—not deployed credentials |
 

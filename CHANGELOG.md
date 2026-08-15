@@ -10,6 +10,14 @@ follow semantic versioning independently from transcript protocol versions.
   protocol flow, result semantics, and public code ownership.
 - Extend the source boundary gate with strict, exact-path PNG validation for
   the two public brand assets.
+- Complete the normative protocol wire schemas and bounded-draw proof format so
+  independent implementations do not depend on unstated Python behavior, and
+  require `state_version` to use the exact JSON integer type.
+- Correct nonce disclosure, witness provenance, audit-hash scope, CLI exit-code,
+  directory discovery, truncation, and example-output documentation.
+- Prevent decoded transcripts from spoofing loader-only truncation markers, and
+  make complete-witness report text state only the equality actually checked.
+- Require private vulnerability reporting to remain available at release time.
 
 ## 0.2.1 - 2026-08-09
 

@@ -513,7 +513,10 @@ def validate_random_state(value: Mapping[str, Any]) -> dict[str, Any]:
     canonical = canonicalize(dict(value))
     if not isinstance(canonical, dict):  # pragma: no cover - mapping invariant
         raise RandomnessError("random operation state must be an object")
-    if canonical.get("state_version") != RANDOM_STATE_VERSION:
+    if (
+        type(canonical.get("state_version")) is not int
+        or canonical.get("state_version") != RANDOM_STATE_VERSION
+    ):
         raise RandomnessError("random operation state has an unsupported version")
     kind = canonical.get("kind")
     if not isinstance(kind, str) or not kind:

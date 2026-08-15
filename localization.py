@@ -322,7 +322,10 @@ def _witness_summary_zh(
     include_english_fallback: bool,
 ) -> str:
     if report.status == "Complete":
-        return "三验俱合：本机所见的策牒检查点与终局记录前后一致。"
+        return (
+            "所提供的策牒检查点与终局记录逐条相等；"
+            "此结果本身不证明这些检查点是在对局过程中保存的。"
+        )
     translated = _WITNESS_SUMMARIES_ZH.get(report.summary)
     if translated:
         return translated

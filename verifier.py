@@ -89,6 +89,10 @@ class _DuplicateJSONKey(ValueError):
     pass
 
 
+class _ParserMarker(dict[str, Any]):
+    """Internal parse result that cannot be supplied by decoded JSON input."""
+
+
 class _IncompleteReceipt(RandomnessError):
     pass
 
@@ -136,11 +140,17 @@ def _reject_json_constant(value: str) -> None:
 
 
 def _parse_marker(category: str, line_number: int, detail: str) -> dict[str, Any]:
-    return {
-        "category": category,
-        "sequence": line_number,
-        "context": {"detail": detail, "line_number": line_number},
-    }
+    return _ParserMarker(
+        {
+            "category": category,
+            "sequence": line_number,
+            "context": {"detail": detail, "line_number": line_number},
+        }
+    )
+
+
+def _is_parser_marker(record: dict[str, Any], category: str) -> bool:
+    return isinstance(record, _ParserMarker) and record.get("category") == category
 
 
 def _looks_like_truncated_json(line: str, error: json.JSONDecodeError) -> bool:
@@ -336,7 +346,11 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
                 "verification input contains a non-object record", sequence=index
             )
     parse_error = next(
-        (record for record in records if record.get("category") == "randomness_parse_error"),
+        (
+            record
+            for record in records
+            if _is_parser_marker(record, "randomness_parse_error")
+        ),
         None,
     )
     if parse_error is not None:
@@ -346,7 +360,11 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
         )
 
     truncated = next(
-        (record for record in records if record.get("category") == "randomness_truncated"),
+        (
+            record
+            for record in records
+            if _is_parser_marker(record, "randomness_truncated")
+        ),
         None,
     )
     if truncated is not None:
@@ -354,7 +372,7 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
             [
                 record
                 for record in records
-                if record.get("category") != "randomness_truncated"
+                if not _is_parser_marker(record, "randomness_truncated")
             ]
         )
         if prefix_report.status == "Invalid":
