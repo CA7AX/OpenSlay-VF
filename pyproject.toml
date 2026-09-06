@@ -20,7 +20,7 @@ classifiers = [
 
 [project.optional-dependencies]
 test = ["pytest>=7,<10"]
-release = ["build==1.5.0"]
+release = ["build==1.6.0"]
 
 [project.urls]
 Homepage = "https://github.com/CA7AX/OpenSlay-VF"
