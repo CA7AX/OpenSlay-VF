@@ -257,6 +257,11 @@ def _format_rules(
             f"{bilingual_label('尚未描述的用途', 'Unlisted purposes', language)}: "
             f"{', '.join(report.unlisted_purposes)}"
         )
+    if report.incomplete_purposes:
+        lines.append(
+            f"{bilingual_label('缺少状态证据的用途', 'Purposes lacking state evidence', language)}: "
+            f"{', '.join(report.incomplete_purposes)}"
+        )
     if report.failure_operation_sequence is not None:
         lines.append(
             f"{bilingual_label('失败随机操作', 'Failure operation', language)}: "
@@ -350,6 +355,7 @@ def _rules_summary_zh(
         return (
             f"已有 {report.checked_operation_count} 次随机操作符合公开规则；"
             f"仍有 {len(report.unlisted_purposes)} 种用途尚未描述。"
+            + (f" {len(report.incomplete_purposes)} 种用途缺少必要的状态或上下文证据。" if report.incomplete_purposes else "")
         )
     translated = _RULE_SUMMARIES_ZH.get(report.summary)
     if translated:

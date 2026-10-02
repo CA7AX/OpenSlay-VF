@@ -1,0 +1,1101 @@
+{
+  "allow_unlisted_purposes": true,
+  "format_version": 2,
+  "operation_rules": [
+    {
+      "operation": "choice",
+      "purpose": "card.destroy.target-card",
+      "rule_reference": "introduction.md / character.csv · card.destroy.target-card",
+      "state_constraints": {
+        "kind": "owned_card_pool"
+      }
+    },
+    {
+      "operation": "choice",
+      "purpose": "card.heal-cleanse.remove-debuff",
+      "rule_reference": "introduction.md / character.csv · card.heal-cleanse.remove-debuff",
+      "state_constraints": {
+        "kind": "debuff_pool"
+      }
+    },
+    {
+      "operation": "choice",
+      "purpose": "card.steal.target-card",
+      "rule_reference": "introduction.md / character.csv · card.steal.target-card",
+      "state_constraints": {
+        "kind": "owned_card_pool"
+      }
+    },
+    {
+      "deck_candidates": {
+        "card_count": 144,
+        "normalized_candidates_sha256": "8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39"
+      },
+      "operation": "shuffle",
+      "purpose_pattern": "deck\\.epoch\\.[1-9][0-9]*",
+      "rule_reference": "公开牌堆清单 · 原始牌堆"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 8
+        },
+        "numerator": {
+          "maximum": 8,
+          "minimum": 0
+        }
+      },
+      "operation": "probability",
+      "purpose": "environment.flood.expire-before-bonus",
+      "rule_reference": "introduction.md / character.csv · environment.flood.expire-before-bonus",
+      "state_constraints": {
+        "effect": "洪水",
+        "kind": "environment_counter"
+      }
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "environment.headwind.skip-turn",
+      "rule_reference": "introduction.md / character.csv · environment.headwind.skip-turn"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "environment.thunder.self-damage",
+      "rule_reference": "introduction.md / character.csv · environment.thunder.self-damage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 8
+        },
+        "numerator": {
+          "maximum": 8,
+          "minimum": 0
+        }
+      },
+      "operation": "probability",
+      "purpose": "environment.wildfire.expire-before-bonus",
+      "rule_reference": "introduction.md / character.csv · environment.wildfire.expire-before-bonus",
+      "state_constraints": {
+        "effect": "山火",
+        "kind": "environment_counter"
+      }
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "rules.guard.prevent-damage",
+      "rule_reference": "introduction.md / character.csv · rules.guard.prevent-damage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "rules.hesitation.slash-fails",
+      "rule_reference": "introduction.md / character.csv · rules.hesitation.slash-fails"
+    },
+    {
+      "operation": "sample",
+      "purpose": "rules.random-hand-discard",
+      "rule_reference": "introduction.md / character.csv · rules.random-hand-discard",
+      "state_constraints": {
+        "kind": "hand_pool"
+      }
+    },
+    {
+      "input_constraints": {
+        "candidates": {
+          "equals": [
+            "openslay.characters.wu_general_ling_tong:WuGeneralLingTong",
+            "openslay.characters.wu_general_lv_meng:WuGeneralLvMeng",
+            "openslay.characters.wu_general_zhou_tai:WuGeneralZhouTai",
+            "openslay.characters.wu_minister_zhou_yu:WuMinisterZhouYu",
+            "openslay.characters.wu_female_da_qiao:WuFemaleDaQiao",
+            "openslay.characters.wu_general_tai_shi_ci:WuGeneralTaiShiCi",
+            "openslay.characters.wu_female_sun_shang_xiang:WuFemaleSunShangXiang",
+            "openslay.characters.wu_lord_sun_quan:WuLordSunQuan",
+            "openslay.characters.wu_lord_sun_ce:WuLordSunCe",
+            "openslay.characters.wu_female_xiao_qiao:WuFemaleXiaoQiao",
+            "openslay.characters.wu_minister_zhang_zhao:WuMinisterZhangZhao",
+            "openslay.characters.wu_female_bu_lian_shi:WuFemaleBuLianShi",
+            "openslay.characters.wu_general_gan_ning:WuGeneralGanNing",
+            "openslay.characters.wu_general_cheng_pu:WuGeneralChengPu",
+            "openslay.characters.wu_general_jiang_qin:WuGeneralJiangQin",
+            "openslay.characters.wu_minister_zhu_ge_jin:WuMinisterZhuGeJin",
+            "openslay.characters.wu_minister_kan_ze:WuMinisterKanZe",
+            "openslay.characters.wu_minister_lu_xun:WuMinisterLuXun",
+            "openslay.characters.wu_minister_lu_su:WuMinisterLuSu",
+            "openslay.characters.wu_general_huang_gai:WuGeneralHuangGai",
+            "openslay.characters.qun_general_hua_xiong:QunGeneralHuaXiong",
+            "openslay.characters.qun_general_lv_bu:QunGeneralLvBu",
+            "openslay.characters.qun_minister_shen_pei:QunMinisterShenPei",
+            "openslay.characters.qun_general_zhang_xiu:QunGeneralZhangXiu",
+            "openslay.characters.qun_general_wen_chou:QunGeneralWenChou",
+            "openslay.characters.qun_general_zhu_jun:QunGeneralZhuJun",
+            "openslay.characters.qun_minister_li_ru:QunMinisterLiRu",
+            "openslay.characters.qun_minister_ju_shou:QunMinisterJuShou",
+            "openslay.characters.qun_minister_tian_feng:QunMinisterTianFeng",
+            "openslay.characters.qun_general_huang_fu_song:QunGeneralHuangFuSong",
+            "openslay.characters.qun_female_zhu_rong_fu_ren:QunFemaleZhuRongFuRen",
+            "openslay.characters.qun_lord_dong_zhuo:QunLordDongZhuo",
+            "openslay.characters.qun_female_cai_shi:QunFemaleCaiShi",
+            "openslay.characters.qun_lord_yuan_shao:QunLordYuanShao",
+            "openslay.characters.qun_minister_xu_you:QunMinisterXuYou",
+            "openslay.characters.qun_female_diao_chan:QunFemaleDiaoChan",
+            "openslay.characters.qun_female_zou_shi:QunFemaleZouShi",
+            "openslay.characters.qun_minister_chen_gong:QunMinisterChenGong",
+            "openslay.characters.qun_general_yan_liang:QunGeneralYanLiang",
+            "openslay.characters.qun_general_gao_shun:QunGeneralGaoShun",
+            "openslay.characters.shu_general_guan_yu:ShuGeneralGuanYu",
+            "openslay.characters.shu_lord_liu_bei:ShuLordLiuBei",
+            "openslay.characters.shu_lord_liu_chan:ShuLordLiuChan",
+            "openslay.characters.shu_female_wu_shi:ShuFemaleWuShi",
+            "openslay.characters.shu_general_jiang_wei:ShuGeneralJiangWei",
+            "openslay.characters.shu_minister_pang_tong:ShuMinisterPangTong",
+            "openslay.characters.shu_general_zhang_fei:ShuGeneralZhangFei",
+            "openslay.characters.shu_minister_xu_shu:ShuMinisterXuShu",
+            "openslay.characters.shu_minister_fa_zheng:ShuMinisterFaZheng",
+            "openslay.characters.shu_female_gan_fu_ren:ShuFemaleGanFuRen",
+            "openslay.characters.shu_female_mi_fu_ren:ShuFemaleMiFuRen",
+            "openslay.characters.shu_minister_jiang_wan:ShuMinisterJiangWan",
+            "openslay.characters.shu_minister_zhu_ge_liang:ShuMinisterZhuGeLiang",
+            "openslay.characters.shu_minister_fei_yi:ShuMinisterFeiYi",
+            "openslay.characters.shu_general_zhao_yun:ShuGeneralZhaoYun",
+            "openslay.characters.shu_general_ma_dai:ShuGeneralMaDai",
+            "openslay.characters.shu_general_ma_chao:ShuGeneralMaChao",
+            "openslay.characters.shu_general_wei_yan:ShuGeneralWeiYan",
+            "openslay.characters.shu_general_huang_zhong:ShuGeneralHuangZhong",
+            "openslay.characters.shu_female_huang_yue_ying:ShuFemaleHuangYueYing",
+            "openslay.characters.wei_general_yue_jin:WeiGeneralYueJin",
+            "openslay.characters.wei_general_yu_jin:WeiGeneralYuJin",
+            "openslay.characters.wei_female_bian_fu_ren:WeiFemaleBianFuRen",
+            "openslay.characters.wei_minister_si_ma_yi:WeiMinisterSiMaYi",
+            "openslay.characters.wei_general_xia_hou_dun:WeiGeneralXiaHouDun",
+            "openslay.characters.wei_general_xia_hou_yuan:WeiGeneralXiaHouYuan",
+            "openslay.characters.wei_general_zhang_liao:WeiGeneralZhangLiao",
+            "openslay.characters.wei_general_zhang_he:WeiGeneralZhangHe",
+            "openslay.characters.wei_general_xu_huang:WeiGeneralXuHuang",
+            "openslay.characters.wei_lord_cao_pi:WeiLordCaoPi",
+            "openslay.characters.wei_general_cao_ren:WeiGeneralCaoRen",
+            "openslay.characters.wei_lord_cao_cao:WeiLordCaoCao",
+            "openslay.characters.wei_female_cao_jie:WeiFemaleCaoJie",
+            "openslay.characters.wei_female_zhen_mi:WeiFemaleZhenMi",
+            "openslay.characters.wei_minister_cheng_yu:WeiMinisterChengYu",
+            "openslay.characters.wei_minister_xun_yu:WeiMinisterXunYu",
+            "openslay.characters.wei_minister_xun_you:WeiMinisterXunYou",
+            "openslay.characters.wei_female_cai_wen_ji:WeiFemaleCaiWenJi",
+            "openslay.characters.wei_minister_jia_xu:WeiMinisterJiaXu",
+            "openslay.characters.wei_minister_guo_jia:WeiMinisterGuoJia"
+          ]
+        },
+        "count": {
+          "one_of": [
+            4,
+            5,
+            8
+          ]
+        }
+      },
+      "operation": "sample",
+      "purpose": "setup.roster",
+      "rule_reference": "OpenSlay roster · full distinct roster selection"
+    },
+    {
+      "candidate_constraints": {
+        "ordered_subset_of": [
+          "openslay.characters.wu_general_ling_tong:WuGeneralLingTong",
+          "openslay.characters.wu_general_lv_meng:WuGeneralLvMeng",
+          "openslay.characters.wu_general_zhou_tai:WuGeneralZhouTai",
+          "openslay.characters.wu_minister_zhou_yu:WuMinisterZhouYu",
+          "openslay.characters.wu_female_da_qiao:WuFemaleDaQiao",
+          "openslay.characters.wu_general_tai_shi_ci:WuGeneralTaiShiCi",
+          "openslay.characters.wu_female_sun_shang_xiang:WuFemaleSunShangXiang",
+          "openslay.characters.wu_lord_sun_quan:WuLordSunQuan",
+          "openslay.characters.wu_lord_sun_ce:WuLordSunCe",
+          "openslay.characters.wu_female_xiao_qiao:WuFemaleXiaoQiao",
+          "openslay.characters.wu_minister_zhang_zhao:WuMinisterZhangZhao",
+          "openslay.characters.wu_female_bu_lian_shi:WuFemaleBuLianShi",
+          "openslay.characters.wu_general_gan_ning:WuGeneralGanNing",
+          "openslay.characters.wu_general_cheng_pu:WuGeneralChengPu",
+          "openslay.characters.wu_general_jiang_qin:WuGeneralJiangQin",
+          "openslay.characters.wu_minister_zhu_ge_jin:WuMinisterZhuGeJin",
+          "openslay.characters.wu_minister_kan_ze:WuMinisterKanZe",
+          "openslay.characters.wu_minister_lu_xun:WuMinisterLuXun",
+          "openslay.characters.wu_minister_lu_su:WuMinisterLuSu",
+          "openslay.characters.wu_general_huang_gai:WuGeneralHuangGai",
+          "openslay.characters.qun_general_hua_xiong:QunGeneralHuaXiong",
+          "openslay.characters.qun_general_lv_bu:QunGeneralLvBu",
+          "openslay.characters.qun_minister_shen_pei:QunMinisterShenPei",
+          "openslay.characters.qun_general_zhang_xiu:QunGeneralZhangXiu",
+          "openslay.characters.qun_general_wen_chou:QunGeneralWenChou",
+          "openslay.characters.qun_general_zhu_jun:QunGeneralZhuJun",
+          "openslay.characters.qun_minister_li_ru:QunMinisterLiRu",
+          "openslay.characters.qun_minister_ju_shou:QunMinisterJuShou",
+          "openslay.characters.qun_minister_tian_feng:QunMinisterTianFeng",
+          "openslay.characters.qun_general_huang_fu_song:QunGeneralHuangFuSong",
+          "openslay.characters.qun_female_zhu_rong_fu_ren:QunFemaleZhuRongFuRen",
+          "openslay.characters.qun_lord_dong_zhuo:QunLordDongZhuo",
+          "openslay.characters.qun_female_cai_shi:QunFemaleCaiShi",
+          "openslay.characters.qun_lord_yuan_shao:QunLordYuanShao",
+          "openslay.characters.qun_minister_xu_you:QunMinisterXuYou",
+          "openslay.characters.qun_female_diao_chan:QunFemaleDiaoChan",
+          "openslay.characters.qun_female_zou_shi:QunFemaleZouShi",
+          "openslay.characters.qun_minister_chen_gong:QunMinisterChenGong",
+          "openslay.characters.qun_general_yan_liang:QunGeneralYanLiang",
+          "openslay.characters.qun_general_gao_shun:QunGeneralGaoShun",
+          "openslay.characters.shu_general_guan_yu:ShuGeneralGuanYu",
+          "openslay.characters.shu_lord_liu_bei:ShuLordLiuBei",
+          "openslay.characters.shu_lord_liu_chan:ShuLordLiuChan",
+          "openslay.characters.shu_female_wu_shi:ShuFemaleWuShi",
+          "openslay.characters.shu_general_jiang_wei:ShuGeneralJiangWei",
+          "openslay.characters.shu_minister_pang_tong:ShuMinisterPangTong",
+          "openslay.characters.shu_general_zhang_fei:ShuGeneralZhangFei",
+          "openslay.characters.shu_minister_xu_shu:ShuMinisterXuShu",
+          "openslay.characters.shu_minister_fa_zheng:ShuMinisterFaZheng",
+          "openslay.characters.shu_female_gan_fu_ren:ShuFemaleGanFuRen",
+          "openslay.characters.shu_female_mi_fu_ren:ShuFemaleMiFuRen",
+          "openslay.characters.shu_minister_jiang_wan:ShuMinisterJiangWan",
+          "openslay.characters.shu_minister_zhu_ge_liang:ShuMinisterZhuGeLiang",
+          "openslay.characters.shu_minister_fei_yi:ShuMinisterFeiYi",
+          "openslay.characters.shu_general_zhao_yun:ShuGeneralZhaoYun",
+          "openslay.characters.shu_general_ma_dai:ShuGeneralMaDai",
+          "openslay.characters.shu_general_ma_chao:ShuGeneralMaChao",
+          "openslay.characters.shu_general_wei_yan:ShuGeneralWeiYan",
+          "openslay.characters.shu_general_huang_zhong:ShuGeneralHuangZhong",
+          "openslay.characters.shu_female_huang_yue_ying:ShuFemaleHuangYueYing",
+          "openslay.characters.wei_general_yue_jin:WeiGeneralYueJin",
+          "openslay.characters.wei_general_yu_jin:WeiGeneralYuJin",
+          "openslay.characters.wei_female_bian_fu_ren:WeiFemaleBianFuRen",
+          "openslay.characters.wei_minister_si_ma_yi:WeiMinisterSiMaYi",
+          "openslay.characters.wei_general_xia_hou_dun:WeiGeneralXiaHouDun",
+          "openslay.characters.wei_general_xia_hou_yuan:WeiGeneralXiaHouYuan",
+          "openslay.characters.wei_general_zhang_liao:WeiGeneralZhangLiao",
+          "openslay.characters.wei_general_zhang_he:WeiGeneralZhangHe",
+          "openslay.characters.wei_general_xu_huang:WeiGeneralXuHuang",
+          "openslay.characters.wei_lord_cao_pi:WeiLordCaoPi",
+          "openslay.characters.wei_general_cao_ren:WeiGeneralCaoRen",
+          "openslay.characters.wei_lord_cao_cao:WeiLordCaoCao",
+          "openslay.characters.wei_female_cao_jie:WeiFemaleCaoJie",
+          "openslay.characters.wei_female_zhen_mi:WeiFemaleZhenMi",
+          "openslay.characters.wei_minister_cheng_yu:WeiMinisterChengYu",
+          "openslay.characters.wei_minister_xun_yu:WeiMinisterXunYu",
+          "openslay.characters.wei_minister_xun_you:WeiMinisterXunYou",
+          "openslay.characters.wei_female_cai_wen_ji:WeiFemaleCaiWenJi",
+          "openslay.characters.wei_minister_jia_xu:WeiMinisterJiaXu",
+          "openslay.characters.wei_minister_guo_jia:WeiMinisterGuoJia"
+        ]
+      },
+      "input_constraints": {
+        "count": {
+          "maximum": 3,
+          "minimum": 1
+        }
+      },
+      "operation": "sample",
+      "purpose": "setup.roster.fill",
+      "rule_reference": "OpenSlay roster · fill unspecified 2v2 seats"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.control-card-target.claim-card",
+      "rule_reference": "introduction.md / character.csv · skill.control-card-target.claim-card"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.cai-shi.control-card-target.gain-guard",
+      "rule_reference": "introduction.md / character.csv · skill.qun.cai-shi.control-card-target.gain-guard"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.diao-chan.slash-target.lower-source-rage",
+      "rule_reference": "introduction.md / character.csv · skill.qun.diao-chan.slash-target.lower-source-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.dong-zhuo.active.imprison",
+      "rule_reference": "introduction.md / character.csv · skill.qun.dong-zhuo.active.imprison"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.hua-xiong.damage-horseless.damage-plus-one",
+      "rule_reference": "introduction.md / character.csv · skill.qun.hua-xiong.damage-horseless.damage-plus-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.shen-pei.lose-rage.recover-hp",
+      "rule_reference": "introduction.md / character.csv · skill.qun.shen-pei.lose-rage.recover-hp"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.tian-feng.end-no-damage.recover-hp",
+      "rule_reference": "introduction.md / character.csv · skill.qun.tian-feng.end-no-damage.recover-hp"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.xu-you.play-skill-card.lose-hp-draw-one",
+      "rule_reference": "introduction.md / character.csv · skill.qun.xu-you.play-skill-card.lose-hp-draw-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.zhang-xiu.damage-controlled.damage-plus-one",
+      "rule_reference": "introduction.md / character.csv · skill.qun.zhang-xiu.damage-controlled.damage-plus-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.zhu-jun.control-card-target.gain-rage",
+      "rule_reference": "introduction.md / character.csv · skill.qun.zhu-jun.control-card-target.gain-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.qun.zou-shi.slash-target.redirect",
+      "rule_reference": "introduction.md / character.csv · skill.qun.zou-shi.slash-target.redirect"
+    },
+    {
+      "operation": "choice",
+      "purpose": "skill.qun.zou-shi.slash-target.redirect-target",
+      "rule_reference": "introduction.md / character.csv · skill.qun.zou-shi.slash-target.redirect-target",
+      "state_constraints": {
+        "kind": "redirect_targets"
+      }
+    },
+    {
+      "input_constraints": {
+        "candidates": {
+          "equals": [
+            "封术",
+            "断粮",
+            "禁锢",
+            "缴械",
+            "闭穴"
+          ]
+        }
+      },
+      "operation": "choice",
+      "purpose": "skill.random-control-card.name",
+      "rule_reference": "character.csv · 献舞倾城 / 虎啸藏计"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.fa-zheng.skill-card-target.cancel-card",
+      "rule_reference": "introduction.md / character.csv · skill.shu.fa-zheng.skill-card-target.cancel-card"
+    },
+    {
+      "operation": "choice",
+      "purpose": "skill.shu.fei-yi.lower-neighbor.steal-hand-card",
+      "rule_reference": "introduction.md / character.csv · skill.shu.fei-yi.lower-neighbor.steal-hand-card",
+      "state_constraints": {
+        "direction": "lower",
+        "kind": "neighbor_hand_pool"
+      }
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.fei-yi.slash-target.cancel-slash-modifier",
+      "rule_reference": "introduction.md / character.csv · skill.shu.fei-yi.slash-target.cancel-slash-modifier"
+    },
+    {
+      "operation": "choice",
+      "purpose": "skill.shu.fei-yi.upper-neighbor.steal-hand-card",
+      "rule_reference": "introduction.md / character.csv · skill.shu.fei-yi.upper-neighbor.steal-hand-card",
+      "state_constraints": {
+        "direction": "upper",
+        "kind": "neighbor_hand_pool"
+      }
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.guan-yu.take-general-damage.prevent-damage",
+      "rule_reference": "introduction.md / character.csv · skill.shu.guan-yu.take-general-damage.prevent-damage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.huang-yue-ying.after-skill-card.draw-one",
+      "rule_reference": "introduction.md / character.csv · skill.shu.huang-yue-ying.after-skill-card.draw-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 2
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.huang-zhong.slash.ignore-distance",
+      "rule_reference": "introduction.md / character.csv · skill.shu.huang-zhong.slash.ignore-distance"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.liu-bei.other-recover-hp.draw-one",
+      "rule_reference": "introduction.md / character.csv · skill.shu.liu-bei.other-recover-hp.draw-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.pang-tong.take-skill-damage.discard-source-hand",
+      "rule_reference": "introduction.md / character.csv · skill.shu.pang-tong.take-skill-damage.discard-source-hand"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.wei-yan.slash-target.redirect-to-source",
+      "rule_reference": "introduction.md / character.csv · skill.shu.wei-yan.slash-target.redirect-to-source"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.wu-shi.draw-phase.same-suit-gain-guard",
+      "rule_reference": "introduction.md / character.csv · skill.shu.wu-shi.draw-phase.same-suit-gain-guard"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.zhang-fei.failed-control.lower-target-rage",
+      "rule_reference": "introduction.md / character.csv · skill.shu.zhang-fei.failed-control.lower-target-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.zhang-fei.take-damage.gain-rage",
+      "rule_reference": "introduction.md / character.csv · skill.shu.zhang-fei.take-damage.gain-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.zhao-yun.slash.ignore-dodge",
+      "rule_reference": "introduction.md / character.csv · skill.shu.zhao-yun.slash.ignore-dodge"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.shu.zhu-ge-liang.skill-damage.damage-plus-one-resolution",
+      "rule_reference": "introduction.md / character.csv · skill.shu.zhu-ge-liang.skill-damage.damage-plus-one-resolution"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.cai-wen-ji.take-damage.draw-one",
+      "rule_reference": "introduction.md / character.csv · skill.wei.cai-wen-ji.take-damage.draw-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.cao-cao.deal-damage.take-hand-card",
+      "rule_reference": "introduction.md / character.csv · skill.wei.cao-cao.deal-damage.take-hand-card"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.cao-jie.enter-dying.discard-source-hand",
+      "rule_reference": "introduction.md / character.csv · skill.wei.cao-jie.enter-dying.discard-source-hand"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.jia-xu.control-card-played.recover-hp",
+      "rule_reference": "introduction.md / character.csv · skill.wei.jia-xu.control-card-played.recover-hp"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.si-ma-yi.draw-phase.status-extra-card",
+      "rule_reference": "introduction.md / character.csv · skill.wei.si-ma-yi.draw-phase.status-extra-card"
+    },
+    {
+      "operation": "choice",
+      "purpose": "skill.wei.xia-hou-yuan.failed-disarm.steal-horse",
+      "rule_reference": "introduction.md / character.csv · skill.wei.xia-hou-yuan.failed-disarm.steal-horse",
+      "state_constraints": {
+        "kind": "horse_pool"
+      }
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "maximum": 4,
+          "minimum": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.xia-hou-yuan.slash.damage-plus-one",
+      "rule_reference": "introduction.md / character.csv · skill.wei.xia-hou-yuan.slash.damage-plus-one",
+      "state_constraints": {
+        "kind": "horse_probability"
+      }
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.xu-huang.damage-controlled.damage-plus-one",
+      "rule_reference": "introduction.md / character.csv · skill.wei.xu-huang.damage-controlled.damage-plus-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.xun-yu.end.remove-matching-environments",
+      "rule_reference": "introduction.md / character.csv · skill.wei.xun-yu.end.remove-matching-environments"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.yu-jin.control-card-target.source-lose-rage",
+      "rule_reference": "introduction.md / character.csv · skill.wei.yu-jin.control-card-target.source-lose-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.yue-jin.slash-target.cancel-slash",
+      "rule_reference": "introduction.md / character.csv · skill.wei.yue-jin.slash-target.cancel-slash"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.zhang-he.deal-damage.draw-one",
+      "rule_reference": "introduction.md / character.csv · skill.wei.zhang-he.deal-damage.draw-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.zhang-liao.out-of-range-damage.gain-rage",
+      "rule_reference": "introduction.md / character.csv · skill.wei.zhang-liao.out-of-range-damage.gain-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wei.zhen-mi.end-hand-over-one.recover-hp",
+      "rule_reference": "introduction.md / character.csv · skill.wei.zhen-mi.end-hand-over-one.recover-hp"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.bu-lian-shi.end-empty-hand.gain-guard",
+      "rule_reference": "introduction.md / character.csv · skill.wu.bu-lian-shi.end-empty-hand.gain-guard"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.cheng-pu.active.target-rage",
+      "rule_reference": "introduction.md / character.csv · skill.wu.cheng-pu.active.target-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.da-qiao.take-red-slash-damage.discard-source-hand",
+      "rule_reference": "introduction.md / character.csv · skill.wu.da-qiao.take-red-slash-damage.discard-source-hand"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.huang-gai.lose-hp.remove-flood",
+      "rule_reference": "introduction.md / character.csv · skill.wu.huang-gai.lose-hp.remove-flood"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.huang-gai.lose-hp.remove-wildfire",
+      "rule_reference": "introduction.md / character.csv · skill.wu.huang-gai.lose-hp.remove-wildfire"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.jiang-qin.deal-damage.flood-target-lose-rage",
+      "rule_reference": "introduction.md / character.csv · skill.wu.jiang-qin.deal-damage.flood-target-lose-rage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.kan-ze.active.imprison",
+      "rule_reference": "introduction.md / character.csv · skill.wu.kan-ze.active.imprison"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.ling-tong.gain-environment.draw-two",
+      "rule_reference": "introduction.md / character.csv · skill.wu.ling-tong.gain-environment.draw-two"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.lv-meng.lose-hand.draw-one",
+      "rule_reference": "introduction.md / character.csv · skill.wu.lv-meng.lose-hand.draw-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.sun-ce.steal-destroy-target.cancel-card-modifier",
+      "rule_reference": "introduction.md / character.csv · skill.wu.sun-ce.steal-destroy-target.cancel-card-modifier"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.sun-quan.draw-phase.flood-extra-card",
+      "rule_reference": "introduction.md / character.csv · skill.wu.sun-quan.draw-phase.flood-extra-card"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 3
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.sun-shang-xiang.active.damage",
+      "rule_reference": "introduction.md / character.csv · skill.wu.sun-shang-xiang.active.damage"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.sun-shang-xiang.damage-male.damage-plus-one",
+      "rule_reference": "introduction.md / character.csv · skill.wu.sun-shang-xiang.damage-male.damage-plus-one"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.tai-shi-ci.slash-dodged.discard-target-hand",
+      "rule_reference": "introduction.md / character.csv · skill.wu.tai-shi-ci.slash-dodged.discard-target-hand"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 4
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.xiao-qiao.take-damage.gain-guard",
+      "rule_reference": "introduction.md / character.csv · skill.wu.xiao-qiao.take-damage.gain-guard"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.zhang-zhao.steal-destroy-target.claim-card",
+      "rule_reference": "introduction.md / character.csv · skill.wu.zhang-zhao.steal-destroy-target.claim-card"
+    },
+    {
+      "input_constraints": {
+        "denominator": {
+          "equals": 2
+        },
+        "numerator": {
+          "equals": 1
+        }
+      },
+      "operation": "probability",
+      "purpose": "skill.wu.zhu-ge-jin.draw-phase.environment-extra-card",
+      "rule_reference": "introduction.md / character.csv · skill.wu.zhu-ge-jin.draw-phase.environment-extra-card"
+    },
+    {
+      "input_constraints": {
+        "candidates": {
+          "equals": [
+            "♥",
+            "♦",
+            "♠",
+            "♣"
+          ]
+        }
+      },
+      "operation": "choice",
+      "purpose": "virtual-card.suit",
+      "rule_reference": "虚拟牌 · 花色候选"
+    }
+  ],
+  "public_rules_hash": "fdcacd70309163e6b364c0133a2c6619cde38d9b6f759206e0c0fca6bb9bff47",
+  "ruleset_id": "openslay-prototype-v2"
+}

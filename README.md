@@ -191,9 +191,21 @@ formulas are normative in [SPEC.md](SPEC.md).
 
 Public data-only descriptors can constrain an operation's `purpose`, type, and
 inputs without publishing the event engine that implements the rule. The
-[bundled prototype descriptor](data/openslay-prototype-v1.partial.json) is
-explicitly **partial**: described operations are checked, while unlisted
-purposes remain outside that result.
+[bundled prototype descriptor](data/openslay-prototype-v2.json) covers all 73
+current operation purposes. It checks fixed skill odds, roster membership and
+counts, control-card and suit pools, and candidates against recorded hands,
+equipment, debuffs, and living neighbors. Horse-count and environment-counter
+probabilities are checked against the recorded pre-operation state.
+
+Unknown future purposes, or missing state or scope bindings required by a described operation,
+still return **Partial**. The historical [v1 partial descriptor](data/openslay-prototype-v1.partial.json)
+remains available by explicit path. Format-2 descriptors define finite public
+input constraints; they do not certify trigger legality or legal state
+transitions. Roster-fill checks known IDs/order/counts, but cannot reconstruct
+which seats were manually chosen from legacy bootstrap state. Redirect checks
+living-player membership and excludes source/owner, but does not prove distance
+eligibility or completeness of the target subset. These limits apply even when
+all supplied operations return `Verified`.
 
 ### Local witness
 

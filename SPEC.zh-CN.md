@@ -447,3 +447,11 @@ SHA256("OpenSlay/public-rules/v1" || utf8(canonical_json(descriptor_without_hash
 
 版本 2 游戏策牒不强制要求 `public_rules_hash`。当提供描述文件、规则检查通过且清单包含匹配字段时，该字段会在 SHA-256 碰撞抗性假设下，以计算方式把解析后的规范描述载荷（不含 `public_rules_hash` 字段本身）绑定到所提供的策牒。描述文件自身哈希不能单独提供策牒绑定或开局收据前绑定；若描述文件未经过外部认证，其中的
 `compatible_ruleset_hashes` 也只是描述文件自身提出的兼容性声明。
+
+## 公开描述文件格式 2（软件包 0.3.0）
+
+格式 1 继续兼容。格式 2 沿用 `OpenSlay/public-rules/v1` 的自哈希公式，不修改策牒协议。每条规则必须提供非空输入、牌堆、候选或状态约束；未知规则字段与状态约束类型会被拒绝。
+
+`candidate_constraints.ordered_subset_of` 要求候选为公开集合的非空、无重复、有序子序列。`state_constraints.kind` 支持：`owned_card_pool`（目标完整手牌/装备键，含区域与索引）、`hand_pool`（某个角色完整手牌及正数弃牌数量）、`horse_pool`（首个目标完整马匹集合）、`debuff_pool`（行动者完整控制/环境键）、`neighbor_hand_pool`（存活邻位完整手牌，必须指定 `direction: upper/lower`）、`redirect_targets`（排除来源与持有者的存活有序无重复角色集合）、`horse_probability`（持有者或行动者的 `min(4, 1 + 马匹数)` 分子）、`environment_counter`（首个目标的 `min(8, active_count)` 分子，必须指定 `effect: 洪水/山火`）。
+
+状态约束要求 `state_version: 1, kind: engine`。缺少此类状态返回 `Partial`，用途列入 `incomplete_purposes`，不增加已检查操作计数；畸形引擎状态或不一致输入返回 `Invalid`。允许的未知用途仍为 `Partial`。`Verified` 仅证明所提供操作满足声明的有限输入约束，不认证状态、不证明触发及状态转移合法性，也不证明仅检查集合成员关系的候选池完整。改向目标不验证距离及候选子集完整性；武将补齐不从旧开局状态重建手选座位。
