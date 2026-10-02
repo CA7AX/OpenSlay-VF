@@ -255,6 +255,8 @@ def _validate_descriptor(descriptor: dict[str, Any], actual_hash: str) -> None:
         for field, constraint in constraints.items():
             if not isinstance(field, str) or not isinstance(constraint, dict):
                 raise ValueError(f"operation rule {index} has malformed constraint")
+            if version == 2 and not constraint:
+                raise ValueError(f"operation rule {index} has an empty input constraint")
             if not set(constraint).issubset({"equals", "one_of", "minimum", "maximum"}):
                 raise ValueError(f"operation rule {index} has unknown constraint operator")
             if "one_of" in constraint and not isinstance(constraint["one_of"], list):

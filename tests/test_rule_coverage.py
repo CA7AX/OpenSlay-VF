@@ -167,7 +167,7 @@ def test_descriptor_is_self_hashed_and_has_no_catch_all() -> None:
     assert len(DESCRIPTOR["operation_rules"]) == 73
 
 
-@pytest.mark.parametrize("change", ["unknown_field", "unknown_state_kind", "wrong_operation", "missing_direction", "empty_constraints", "duplicate_universe", "floating_version"])
+@pytest.mark.parametrize("change", ["unknown_field", "unknown_state_kind", "wrong_operation", "missing_direction", "empty_constraints", "empty_input_operator", "duplicate_universe", "floating_version"])
 def test_format_two_rejects_unsupported_or_empty_constraints(change: str) -> None:
     descriptor = copy.deepcopy(DESCRIPTOR)
     rule = next(rule for rule in descriptor["operation_rules"] if rule.get("purpose") == "skill.shu.fei-yi.upper-neighbor.steal-hand-card")
@@ -181,6 +181,8 @@ def test_format_two_rejects_unsupported_or_empty_constraints(change: str) -> Non
         del rule["state_constraints"]["direction"]
     elif change == "empty_constraints":
         rule["state_constraints"] = {}
+    elif change == "empty_input_operator":
+        rule["input_constraints"] = {"candidates": {}}
     elif change == "duplicate_universe":
         rule["candidate_constraints"] = {"ordered_subset_of": ["same", "same"]}
     else:
