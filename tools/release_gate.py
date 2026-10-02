@@ -298,13 +298,9 @@ def verify_metadata(version: str) -> None:
 
 
 def descriptor_is_partial() -> bool:
-    descriptor_path = ROOT / "data" / "openslay-prototype-v1.partial.json"
+    descriptor_path = ROOT / "data" / "openslay-prototype-v2.json"
     descriptor = json.loads(descriptor_path.read_text(encoding="utf-8"))
-    filename_partial = descriptor_path.name.endswith(".partial.json")
-    identifier_partial = str(descriptor.get("ruleset_id", "")).endswith("-partial")
     allow_partial = descriptor.get("allow_unlisted_purposes") is True
-    if len({filename_partial, identifier_partial, allow_partial}) != 1:
-        fail("rules descriptor partial markers disagree")
     for readme in (ROOT / "README.md", ROOT / "README.zh-CN.md"):
         if "partial" not in readme.read_text(encoding="utf-8").lower() and "部分" not in readme.read_text(
             encoding="utf-8"

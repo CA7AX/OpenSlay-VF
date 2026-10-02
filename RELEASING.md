@@ -24,7 +24,7 @@ before the game ships that verifier.
    publishes it.
 
 All `0.x` versions are marked as GitHub prereleases. A `v1+` release is blocked
-while the bundled descriptor filename/id/allow-list flag identify it as partial.
+while the bundled descriptor permits uncovered purposes.
 Tags and published release assets must never be moved or replaced. Enable the
 repository's `main` and `v*` rulesets, read-only default Actions token, private
 vulnerability reporting, and immutable releases before the first tag; keep

@@ -12,6 +12,7 @@ from typing import Any, Literal
 
 from .protocol import DIGEST_RE, VerificationError, canonical_json, canonicalize
 from .verifier import VerificationReport
+from .rule_inputs import state_rule_error, validate_state_rule
 
 
 RuleStatus = Literal["Verified", "Partial", "Not checked", "Invalid"]
@@ -27,6 +28,7 @@ class RuleVerificationReport:
     failure_operation_sequence: int | None = None
     failure_purpose: str | None = None
     descriptor_hash: str = ""
+    incomplete_purposes: tuple[str, ...] = ()
 
     @property
     def verified(self) -> bool:
@@ -41,7 +43,7 @@ def load_ruleset(path: str | Path) -> dict[str, Any]:
         if str(path) == "bundled":
             raw = (
                 files("openslay_rng_verifier")
-                .joinpath("data/openslay-prototype-v1.partial.json")
+                .joinpath("data/openslay-prototype-v2.json")
                 .read_text(encoding="utf-8")
             )
         else:
@@ -82,8 +84,9 @@ def verify_declared_rules(
             summary="No public ruleset descriptor was supplied.",
             exit_code=2,
         )
-    digest = descriptor_hash(descriptor)
+    digest = ""
     try:
+        digest = descriptor_hash(descriptor)
         _validate_descriptor(descriptor, digest)
     except ValueError as exc:
         return RuleVerificationReport(
@@ -120,6 +123,7 @@ def verify_declared_rules(
     raw_rules = descriptor.get("operation_rules", [])
     allow_unlisted = descriptor.get("allow_unlisted_purposes", False)
     unlisted: set[str] = set()
+    incomplete: set[str] = set()
     checked = 0
     for sequence, event in enumerate(verification.random_events, start=1):
         purpose = event.get("purpose")
@@ -149,6 +153,12 @@ def verify_declared_rules(
                 descriptor_hash=digest,
             )
         error = _operation_rule_error(event, matching[0])
+        missing_state = False
+        if not error and "state_constraints" in matching[0]:
+            error, missing_state = state_rule_error(event, matching[0]["state_constraints"])
+        if missing_state:
+            incomplete.add(str(purpose))
+            continue
         if error:
             return RuleVerificationReport(
                 status="Invalid",
@@ -161,16 +171,18 @@ def verify_declared_rules(
             )
         checked += 1
 
-    if unlisted:
+    if unlisted or incomplete:
         return RuleVerificationReport(
             status="Partial",
             summary=(
                 f"{checked} operation(s) match public rules; "
                 f"{len(unlisted)} purpose(s) are not yet described."
+                + (f" {len(incomplete)} purpose(s) lack required pre-operation state." if incomplete else "")
             ),
             exit_code=2,
             checked_operation_count=checked,
             unlisted_purposes=tuple(sorted(unlisted)),
+            incomplete_purposes=tuple(sorted(incomplete)),
             descriptor_hash=digest,
         )
     return RuleVerificationReport(
@@ -183,7 +195,8 @@ def verify_declared_rules(
 
 
 def _validate_descriptor(descriptor: dict[str, Any], actual_hash: str) -> None:
-    if descriptor.get("format_version") != 1:
+    version = descriptor.get("format_version")
+    if type(version) is not int or version not in {1, 2}:
         raise ValueError("unsupported descriptor format_version")
     if not isinstance(descriptor.get("ruleset_id"), str) or not descriptor["ruleset_id"]:
         raise ValueError("ruleset_id must be a non-empty string")
@@ -218,12 +231,32 @@ def _validate_descriptor(descriptor: dict[str, Any], actual_hash: str) -> None:
                 raise ValueError(f"operation rule {index} has invalid regex: {exc}") from exc
         if rule.get("operation") not in {"probability", "choice", "sample", "shuffle"}:
             raise ValueError(f"operation rule {index} has unsupported operation")
+        if version == 2:
+            allowed = {"purpose", "purpose_pattern", "operation", "rule_reference", "input_constraints", "deck_candidates", "candidate_constraints", "state_constraints"}
+            if set(rule) - allowed:
+                raise ValueError(f"operation rule {index} has unknown fields")
+            if not any(rule.get(key) for key in ("input_constraints", "deck_candidates", "candidate_constraints", "state_constraints")):
+                raise ValueError(f"operation rule {index} must constrain inputs")
+        for key in ("candidate_constraints", "state_constraints"):
+            if key in rule and version != 2:
+                raise ValueError(f"{key} requires descriptor format_version 2")
+        candidate = rule.get("candidate_constraints")
+        if candidate is not None:
+            if not isinstance(candidate, dict) or set(candidate) != {"ordered_subset_of"}:
+                raise ValueError(f"operation rule {index} has malformed candidate constraints")
+            values = candidate["ordered_subset_of"]
+            if not isinstance(values, list) or not values or any(not isinstance(value, str) for value in values) or len(set(values)) != len(values):
+                raise ValueError(f"operation rule {index} has invalid public candidate universe")
+        if "state_constraints" in rule:
+            validate_state_rule(rule["state_constraints"], rule["operation"])
         constraints = rule.get("input_constraints", {})
         if not isinstance(constraints, dict):
             raise ValueError(f"operation rule {index} constraints must be an object")
         for field, constraint in constraints.items():
             if not isinstance(field, str) or not isinstance(constraint, dict):
                 raise ValueError(f"operation rule {index} has malformed constraint")
+            if version == 2 and not constraint:
+                raise ValueError(f"operation rule {index} has an empty input constraint")
             if not set(constraint).issubset({"equals", "one_of", "minimum", "maximum"}):
                 raise ValueError(f"operation rule {index} has unknown constraint operator")
             if "one_of" in constraint and not isinstance(constraint["one_of"], list):
@@ -260,6 +293,14 @@ def _operation_rule_error(event: dict[str, Any], rule: dict[str, Any]) -> str:
     inputs = event.get("inputs")
     if not isinstance(inputs, dict):
         return "inputs are not an object"
+    candidate_rule = rule.get("candidate_constraints")
+    if candidate_rule is not None:
+        candidates = inputs.get("candidates")
+        universe = candidate_rule["ordered_subset_of"]
+        if not isinstance(candidates, list) or not candidates or any(not isinstance(value, str) or value not in universe for value in candidates):
+            return "candidates are outside the public roster"
+        if len(set(candidates)) != len(candidates) or candidates != [value for value in universe if value in candidates]:
+            return "roster candidates must be unique and in public roster order"
     constraints = rule.get("input_constraints", {})
     for field, constraint in constraints.items():
         if field not in inputs:

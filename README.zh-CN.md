@@ -91,7 +91,7 @@ $ echo $?
 协议编码、有界 HMAC 数据流、语义随机操作、通用随机预言机、策牒验证、本机见证核对、命令行界面与公开数据均由本仓库维护。完整协议见 [SPEC.zh-CN.md](SPEC.zh-CN.md)。应用创建通用随机预言机时，必须明确提供规则集哈希。
 
 > [!WARNING]
-> 所有 `0.x` 版本均为开发预发布，协议、报告格式与公开规则覆盖面仍可能演进。随包提供的原型规则描述文件明确为**部分（Partial）**；稳定的 `1.0` 版本要求完整规则描述文件，并将其哈希绑定进游戏策牒。
+> 所有 `0.x` 版本均为开发预发布，协议、报告格式与公开规则覆盖面仍可能演进。随包规则覆盖当前全部 73 个随机用途；未知用途或缺少必要状态仍返回 **Partial（部分）**。稳定的 `1.0` 版本仍要求完整规则描述文件，并将其哈希绑定进游戏策牒。
 
 <a id="scope"></a>
 
@@ -152,7 +152,7 @@ openslay-rng-verify /path/to/transcript.json --json
 openslay-rng-verify /path/to/match.jsonl \
   --witness /path/to/randomness_witness/<match-hash>.jsonl
 
-# 同时核对随包公开规则（当前为部分描述）
+# 同时核对随包公开规则（覆盖当前用途，缺少证据仍为 Partial）
 openslay-rng-verify /path/to/match.jsonl --rules bundled
 
 # 选择人类可读报告语言
@@ -200,7 +200,7 @@ flowchart LR
 | `Incomplete` | 公开材料、终局揭示或所请求的检查点尚不完整 | `2` |
 | `Unverified` | 旧式仅种子日志、已弃用/未验证随机源，或缺少可验证清单 | `2` |
 
-可选层使用各自的稳定状态：本机见证为 `Complete`、`Missing`、`Incomplete`、`Invalid`；公开规则为 `Verified`、`Partial`、`Not checked`、`Invalid`。`Partial` 表示已描述的随机操作均匹配，但描述文件有意允许尚未列出的用途。
+可选层使用各自的稳定状态：本机见证为 `Complete`、`Missing`、`Incomplete`、`Invalid`；公开规则为 `Verified`、`Partial`、`Not checked`、`Invalid`。`Partial` 表示存在尚未列出的用途，或已描述操作缺少必要的操作前状态。
 
 命令行会合并所有已请求检查的退出码：任一检查为 `1`，整体返回 `1`；否则任一检查为 `2`，整体返回 `2`；只有所有已请求检查都完整通过时才返回 `0`。
 
@@ -278,3 +278,9 @@ python -m pytest -q
 <p align="center">
   <sub>⚔️ <strong>Without verification comes no fairness. 不经验证，无以言公。</strong> ⚔️</sub>
 </p>
+
+### 当前公开规则覆盖
+
+[默认 v2 描述文件](data/openslay-prototype-v2.json)覆盖 73 个当前用途：固定技能概率、武将候选及抽取数量、控制牌和花色候选，以及操作前状态中的完整手牌、装备、负面状态和存活邻位手牌。马匹数量和环境累计次数对应的动态概率也会核对。旧的 [v1 部分描述文件](data/openslay-prototype-v1.partial.json)保留，可通过显式路径使用。
+
+这些检查只约束已记录的随机输入，不认证状态，也不重放合法状态转移。补齐武将检查已知候选、顺序和数量；旧的开局状态不足以重建手选座位。改向目标检查存活角色集合及排除来源/技能持有者，不证明距离合法性或候选子集完整性。即使返回 `Verified`，这些范围限制仍然适用。

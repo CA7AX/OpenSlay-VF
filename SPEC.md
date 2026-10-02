@@ -643,3 +643,22 @@ transcript under SHA-256 collision resistance. A descriptor's self-hash alone
 provides no transcript or pre-receipt binding; `compatible_ruleset_hashes` is
 merely a descriptor-side compatibility claim unless the descriptor is
 authenticated externally.
+
+### Public descriptor format 2 (package 0.3.0)
+
+Descriptor formats 1 and 2 use the unchanged `OpenSlay/public-rules/v1` self-hash formula. This is a descriptor extension, not a transcript protocol change; format-1 descriptors remain supported. Format 2 requires each selector to carry nonempty input, deck, candidate, or state constraints. Unknown rule fields and state kinds are rejected.
+
+`candidate_constraints: {"ordered_subset_of": ["id", ...]}` requires a nonempty, duplicate-free subsequence of the public universe in the declared order. `state_constraints` declares one finite `kind`; it requires an engine snapshot (`state_version: 1`, `kind: "engine"`). Supported kinds are:
+
+| Kind | Checked input |
+| --- | --- |
+| `owned_card_pool` | Complete sorted hand/horse keys, including player, zone, and index; player must occur in scope targets |
+| `hand_pool` | Exact complete hand of one recorded player; discard count is positive and bounded by hand size |
+| `horse_pool` | Complete sorted horse keys of the first scope target |
+| `debuff_pool` | Complete sorted control/environment keys of the scope actor |
+| `neighbor_hand_pool` | Complete sorted hand keys of the living upper/lower neighbor of the scope actor; requires `direction` |
+| `redirect_targets` | Unique sorted living player IDs excluding scope actor and owner; distance and subset completeness are not checked |
+| `horse_probability` | Numerator `min(4, 1 + horse count)` of scope owner, falling back to actor |
+| `environment_counter` | Numerator `min(8, active_count)` for the first scope target; requires `effect` (`洪水` or `山火`) |
+
+Malformed engine evidence or inconsistent inputs are `Invalid`. Unavailable engine state or required scope bindings are `Partial`, listed separately as `incomplete_purposes`; such operations do not increment `checked_operation_count`. Unknown purposes remain `Partial` when allowed by the descriptor. `Verified` means all supplied operations passed the declared finite input constraints. It does not authenticate snapshots, prove trigger/transition legality, or prove every candidate pool is complete where a rule checks membership only.

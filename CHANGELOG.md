@@ -5,6 +5,13 @@ follow semantic versioning independently from transcript protocol versions.
 
 ## Unreleased
 
+## 0.3.0 - 2026-10-02
+
+- Cover all 73 current random purposes with a new bundled format-2 public rules descriptor; retain the immutable historical v1 partial descriptor.
+- Check fixed probabilities and choice pools, roster candidates/counts, complete recorded hand/equipment/debuff/neighbor pools, living redirect membership, and state-dependent horse/environment numerators.
+- Keep unknown purposes and unavailable required pre-operation state Partial; report missing-state purposes separately and reject malformed or inconsistent evidence.
+- Add cryptographically consistent wrong-input tests without changing protocol-v2 encodings, seed derivation, streams, or transcript verification.
+
 - Adopt the water-ink OpenSlay emblem and a new verifier README hero.
 - Reorganize the English and Chinese project guides around verification scope,
   protocol flow, result semantics, and public code ownership.
