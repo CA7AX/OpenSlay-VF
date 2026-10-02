@@ -14,7 +14,7 @@ from openslay_rng_verifier.rules import descriptor_hash, _validate_descriptor
 ROOT = Path(__file__).resolve().parents[1]
 DESCRIPTOR = load_ruleset("bundled")
 RULES = {rule["purpose"]: rule for rule in DESCRIPTOR["operation_rules"] if "purpose" in rule}
-DECK = json.loads((ROOT / "data/prototype-deck-v1.json").read_text())["candidates"]
+DECK = json.loads((ROOT / "data/prototype-deck-v1.json").read_text(encoding="utf-8"))["candidates"]
 
 
 class CaptureLogger:
