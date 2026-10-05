@@ -38,6 +38,8 @@ def _report(purpose: str, operation: str, inputs: dict[str, Any], *, state: dict
         random_oracle.probability(purpose, inputs["numerator"], inputs["denominator"], scope=scope)
     elif operation == "choice":
         random_oracle.choice(purpose, inputs["candidates"], scope=scope)
+    elif operation == "shuffle":
+        random_oracle.shuffle(purpose, copy.deepcopy(inputs["candidates"]), scope=scope)
     else:
         random_oracle.sample(purpose, inputs["candidates"], inputs["count"], scope=scope)
     random_oracle.finalize(outcome="completed", receipt_summary={"winner_ids": [0]})
@@ -77,6 +79,25 @@ def test_roster_pool_and_selection_count() -> None:
     assert _report("setup.roster.fill", "sample", {"candidates": roster[2:], "count": 2}).status == "Verified"
     for candidates, count in ((roster[:2] * 2, 2), (["not-a-character"], 1), (list(reversed(roster)), 1), (roster, 4)):
         assert _report("setup.roster.fill", "sample", {"candidates": candidates, "count": count}).status == "Invalid"
+
+
+def test_identity_deal_uses_only_public_ordered_role_lists() -> None:
+    five_player_roles = ["忠臣", "反贼", "反贼", "内奸"]
+    eight_player_roles = ["忠臣", "忠臣", "反贼", "反贼", "反贼", "内奸", "内奸"]
+    for candidates in (five_player_roles, eight_player_roles):
+        assert _report("setup.identity", "shuffle", {"candidates": candidates}).status == "Verified"
+        assert _report("setup.identity", "sample", {"candidates": candidates, "count": len(candidates)}).status == "Invalid"
+    for candidates in (
+        list(reversed(five_player_roles)),
+        list(reversed(eight_player_roles)),
+        ["主公", *five_player_roles],
+        ["忠臣", "反贼", "内奸", "内奸"],
+        ["忠臣", "忠臣", "反贼", "反贼", "反贼", "反贼", "内奸"],
+        [],
+    ):
+        result = _report("setup.identity", "shuffle", {"candidates": candidates})
+        assert result.status == "Invalid"
+        assert result.failure_purpose == "setup.identity"
 
 
 @pytest.mark.parametrize("purpose", ["virtual-card.suit", "skill.random-control-card.name"])
@@ -164,7 +185,7 @@ def test_descriptor_is_self_hashed_and_has_no_catch_all() -> None:
     assert DESCRIPTOR["public_rules_hash"] == descriptor_hash(DESCRIPTOR)
     patterns = [rule["purpose_pattern"] for rule in DESCRIPTOR["operation_rules"] if "purpose_pattern" in rule]
     assert patterns == [r"deck\.epoch\.[1-9][0-9]*"]
-    assert len(DESCRIPTOR["operation_rules"]) == 73
+    assert len(DESCRIPTOR["operation_rules"]) == 74
 
 
 @pytest.mark.parametrize("change", ["unknown_field", "unknown_state_kind", "wrong_operation", "missing_direction", "empty_constraints", "empty_input_operator", "duplicate_universe", "floating_version"])
