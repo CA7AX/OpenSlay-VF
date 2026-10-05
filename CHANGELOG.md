@@ -5,6 +5,11 @@ follow semantic versioning independently from transcript protocol versions.
 
 ## Unreleased
 
+## 0.3.1 - 2026-10-05
+
+- Describe the 5p/8p hidden identity deal (`setup.identity`): only the two public role lists, in fixed order, with the lord excluded from the shuffle.
+- Reject reordered roles, incorrect counts, lord-containing or empty lists, and non-shuffle identity operations without changing the transcript format or verifier code.
+
 ## 0.3.0 - 2026-10-02
 
 - Cover all 73 current random purposes with a new bundled format-2 public rules descriptor; retain the immutable historical v1 partial descriptor.

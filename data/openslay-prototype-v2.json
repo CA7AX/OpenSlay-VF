@@ -134,6 +134,32 @@
     {
       "input_constraints": {
         "candidates": {
+          "one_of": [
+            [
+              "忠臣",
+              "反贼",
+              "反贼",
+              "内奸"
+            ],
+            [
+              "忠臣",
+              "忠臣",
+              "反贼",
+              "反贼",
+              "反贼",
+              "内奸",
+              "内奸"
+            ]
+          ]
+        }
+      },
+      "operation": "shuffle",
+      "purpose": "setup.identity",
+      "rule_reference": "introduction.md · 身份模式 · 五人 1/1/2/1、八人 1/2/3/2（主公固定首位，其余身份暗发）"
+    },
+    {
+      "input_constraints": {
+        "candidates": {
           "equals": [
             "openslay.characters.wu_general_ling_tong:WuGeneralLingTong",
             "openslay.characters.wu_general_lv_meng:WuGeneralLvMeng",
@@ -1096,6 +1122,6 @@
       "rule_reference": "虚拟牌 · 花色候选"
     }
   ],
-  "public_rules_hash": "fdcacd70309163e6b364c0133a2c6619cde38d9b6f759206e0c0fca6bb9bff47",
+  "public_rules_hash": "28082a21c60dba9602f1874ad7bf01e5cfc77ce8188971d838e6fcd27ffc0d73",
   "ruleset_id": "openslay-prototype-v2"
 }
