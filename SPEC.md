@@ -179,6 +179,7 @@ extension fields are allowed and are included in the manifest audit hash.
 | `participants` | Empty array in training; ascending-seat receipt array online |
 | `server_commitment` | `null` in training; 64-character lowercase hexadecimal digest online |
 | `deck_source` | Must be `oracle` for a verified result; a missing or different value yields `Unverified` after all otherwise applicable checks. |
+| `deck_ledger_version` | JSON integer `1` declares the [deck ledger](#deck-ledger). With `deck_source = oracle`, a missing or different value yields `Unverified` after all otherwise applicable checks. |
 
 `public_rules_hash` may be present as an extension; its separate rules-layer
 semantics are defined under [Public rules](#public-rules).
@@ -258,9 +259,11 @@ Before an operation, the engine records a canonical authoritative `state`
 object. A conforming state has JSON integer `state_version = 1` and a non-empty
 string `kind`; other canonical fields are permitted. OpenSlay engine states
 include hidden card zones and active resolution state and are not viewer-redacted
-UI snapshots. The verifier validates only canonical form, `state_version`,
-`kind`, and the digest; it does not prove completeness or legal transition from
-the preceding state.
+UI snapshots. The verifier validates canonical form, `state_version`, `kind`,
+and the digest; it does not prove completeness or legal transition from the
+preceding state. When the manifest declares the [deck ledger](#deck-ledger),
+the state field `deck_ledger` is reserved for it, and the verifier also replays
+that field and checks an `engine` state's `zones.draw_pile`.
 
 The state and operation context are bound as follows:
 
@@ -443,6 +446,53 @@ After replacing those IDs with `1..144`,
 `8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39`.
 The complete public candidate list ships in `data/prototype-deck-v1.json`.
 
+### Deck ledger
+
+A manifest with JSON integer `deck_ledger_version = 1` declares that every card
+leaving or returning to the draw pile is recorded. Every operation `state` then
+contains `deck_ledger`, an array of the moves since the previous operation (or
+since the manifest, for the first operation), and the reveal contains
+`deck_ledger_tail`, an array of the moves after the last operation. Existing
+digests bind both: the state digest binds an operation's moves into its HMAC
+context and audit hash, and the reveal binds the tail into `final_audit_hash`.
+Each move has exactly one of these forms:
+
+```json
+{"move": "draw", "card_id": 17, "player_id": 2}
+{"move": "take", "card_id": 18, "player_id": 1}
+{"move": "restore", "card_ids": [19, 18], "player_id": 1}
+```
+
+Card ids are positive JSON-safe integers, `card_ids` contains no duplicates, and
+`player_id` is a uint32 or `null`. `draw` moves a card into a hand; `take`
+removes it for a skill inspection; `restore` returns inspected cards.
+
+The verifier replays one draw pile across all epochs. The pile is ordered bottom
+first, so its last element is drawn next, which is also the order of a shuffle
+`result`:
+
+1. Before each operation, apply its `deck_ledger` in order. `draw` and `take`
+   require `card_id` to equal the top card's `card_id` and remove that card.
+   `take` adds the card to the open inspection, and every take in one
+   inspection names the same `player_id`. `draw` closes any open inspection.
+2. `restore` requires an open inspection with the same `player_id`, and every
+   id must name a card taken during that inspection. The cards are placed on
+   top so that `card_ids[0]` is drawn next, and the inspection closes. Taken
+   cards that are not restored stay out of the pile.
+3. If the operation's `state.kind` is `engine`, `state.zones.draw_pile` must be
+   present and equal the replayed pile exactly, card objects included.
+4. A deck-epoch shuffle requires the replayed pile to be empty; its `result`
+   becomes the new pile.
+5. After the last operation, apply `deck_ledger_tail`.
+
+Any violation is `Invalid`. A successful replay proves that every draw took the
+top card of a verified shuffle, that no epoch was reshuffled early, and that each
+recorded engine draw pile changed only through declared moves. It does not
+prove that an inspection was triggered legally, that a restore order was the
+inspecting player's choice, or that a drawn card reached the named hand; those
+require engine replay of the accepted-action log. Moves after the last
+operation are bound only by the terminal reveal, not by any live checkpoint.
+
 ## Transcript hash chain
 
 Every randomness record extends the previous hash:
@@ -484,6 +534,7 @@ included in `final_audit_hash`.
 | `reason` | Optional; if present, string or `null` |
 | `operation_count` | Non-negative JSON-safe integer equal to the number of operation records |
 | `receipt_summary` | Object; mode-specific requirements below |
+| `deck_ledger_tail` | Required array when the manifest declares deck ledger version 1; see [Deck ledger](#deck-ledger) |
 | `final_audit_hash` | Lowercase 64-character hexadecimal reveal-chain head |
 
 ### Training reveal
@@ -541,6 +592,10 @@ Verification completion follows these branches:
   field named `unverified_adapter` anywhere in the manifest, an operation
   context, or the reveal context yields `Unverified` rather than a verified
   claim.
+- With `deck_source = oracle`, a manifest whose `deck_ledger_version` is missing
+  or is not JSON integer `1` yields `Unverified`: the deck order may be proved,
+  but dealing is not. With version 1, the [deck ledger](#deck-ledger) replay
+  must succeed; a failure is `Invalid` regardless of `deck_source`.
 - A verified transcript must contain at least one valid prototype deck epoch.
   An aborted transcript with no epoch is `Incomplete`; a completed oracle-deck
   transcript with no epoch is `Invalid`.

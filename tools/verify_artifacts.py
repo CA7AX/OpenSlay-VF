@@ -25,6 +25,7 @@ REQUIRED_PACKAGE_FILES = {
     "cli.py",
     "data/openslay-prototype-v1.partial.json",
     "data/prototype-deck-v1.json",
+    "deck_ledger.py",
     "localization.py",
     "operations.py",
     "oracle.py",

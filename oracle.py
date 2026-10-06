@@ -32,6 +32,9 @@ RANDOMNESS_FORMAT_VERSION = 2
 RANDOMNESS_ALGORITHM = "openslay-hmac-sha256-state-v2"
 RANDOM_STATE_VERSION = 1
 MAX_SAFE_JSON_INTEGER = (1 << 53) - 1
+DECK_LEDGER_VERSION = 1
+DECK_LEDGER_STATE_FIELD = "deck_ledger"
+DECK_LEDGER_TAIL_FIELD = "deck_ledger_tail"
 
 SERVER_COMMITMENT_TAG = b"OpenSlay/server-commitment/v1"
 PLAYER_CONTRIBUTION_TAG = b"OpenSlay/player-contribution/v1"
@@ -458,6 +461,47 @@ def canonicalize(value: Any) -> Any:
     )
 
 
+def validate_deck_move(value: Mapping[str, Any]) -> dict[str, Any]:
+    """Return one canonical deck-ledger entry or reject its wire shape.
+
+    ``draw`` and ``take`` remove the top card of the draw pile, for a hand or
+    for a skill inspection respectively.  ``restore`` returns inspected cards
+    to the top; its first card id is the next card drawn.
+    """
+
+    if not isinstance(value, Mapping):
+        raise RandomnessError("deck move must be an object")
+    entry = canonicalize(dict(value))
+    move = entry.get("move")
+    if move in {"draw", "take"}:
+        if set(entry) != {"move", "card_id", "player_id"}:
+            raise RandomnessError(f"deck {move} move has missing or unexpected fields")
+        _validate_deck_card_id(entry["card_id"])
+    elif move == "restore":
+        if set(entry) != {"move", "card_ids", "player_id"}:
+            raise RandomnessError("deck restore move has missing or unexpected fields")
+        card_ids = entry["card_ids"]
+        if not isinstance(card_ids, list):
+            raise RandomnessError("deck restore card_ids must be a list")
+        for card_id in card_ids:
+            _validate_deck_card_id(card_id)
+        if len(set(card_ids)) != len(card_ids):
+            raise RandomnessError("deck restore card_ids must be unique")
+    else:
+        raise RandomnessError(f"unsupported deck move: {move!r}")
+    player_id = entry["player_id"]
+    if player_id is not None and (
+        type(player_id) is not int or not 0 <= player_id <= 0xFFFFFFFF
+    ):
+        raise RandomnessError("deck move player_id must be a uint32 or null")
+    return entry
+
+
+def _validate_deck_card_id(value: Any) -> None:
+    if type(value) is not int or not 0 < value <= MAX_SAFE_JSON_INTEGER:
+        raise RandomnessError("deck move card ids must be positive integers")
+
+
 def validate_ruleset_hash(value: str) -> str:
     if not isinstance(value, str) or not _RULESET_HASH_RE.fullmatch(value):
         raise RandomnessError("ruleset_hash must be a lowercase SHA-256 hexadecimal digest")
@@ -612,6 +656,7 @@ class _PreparedOperation:
     state_digest: str
     context_digest: str
     previous_audit_hash: str
+    deck_moves_included: int = 0
 
 
 class _HMACStream:
@@ -708,6 +753,9 @@ class RandomOracle:
         self._finalized = False
         self._records: list[dict[str, Any]] = []
         self._pending_records: list[tuple[str, str, dict[str, Any]]] = []
+        # Deck moves since the last recorded operation; each operation's state
+        # carries them, and the reveal carries any trailing moves.
+        self._pending_deck_moves: list[dict[str, Any]] = []
         base_manifest: dict[str, Any] = {
             "format_version": RANDOMNESS_FORMAT_VERSION,
             "algorithm": RANDOMNESS_ALGORITHM,
@@ -739,6 +787,7 @@ class RandomOracle:
             "operation_count",
             "final_audit_hash",
             "receipt_summary",
+            DECK_LEDGER_TAIL_FIELD,
         }
         conflicting_reveal_fields = reserved_reveal_fields.intersection(
             self._reveal_template
@@ -849,8 +898,17 @@ class RandomOracle:
         if logger is not None:
             self._flush_pending()
 
+    @property
+    def deck_ledger_enabled(self) -> bool:
+        version = self.manifest.get("deck_ledger_version")
+        return type(version) is int and version == DECK_LEDGER_VERSION
+
     def set_deck_source(self, deck_source: str) -> None:
-        """Set or idempotently confirm the authoritative deck source."""
+        """Set or idempotently confirm the authoritative deck source.
+
+        An ``oracle`` deck also declares the deck ledger: every later draw,
+        inspection, and restore must then be recorded through this oracle.
+        """
 
         if not isinstance(deck_source, str) or not deck_source:
             raise RandomnessError("deck_source must be a non-empty string")
@@ -867,6 +925,41 @@ class RandomOracle:
                 )
             return
         self.manifest["deck_source"] = deck_source
+        if deck_source == "oracle":
+            self.manifest["deck_ledger_version"] = DECK_LEDGER_VERSION
+
+    def record_deck_draw(self, card_id: int, *, player_id: int | None) -> None:
+        """Record the top draw-pile card moving into a player's hand."""
+
+        self._append_deck_move(
+            {"move": "draw", "card_id": card_id, "player_id": player_id}
+        )
+
+    def record_deck_take(self, card_id: int, *, player_id: int | None) -> None:
+        """Record the top draw-pile card leaving for a skill inspection."""
+
+        self._append_deck_move(
+            {"move": "take", "card_id": card_id, "player_id": player_id}
+        )
+
+    def record_deck_restore(
+        self,
+        card_ids: Sequence[int],
+        *,
+        player_id: int | None,
+    ) -> None:
+        """Record inspected cards returning to the top, next-drawn first."""
+
+        self._append_deck_move(
+            {"move": "restore", "card_ids": list(card_ids), "player_id": player_id}
+        )
+
+    def _append_deck_move(self, move: Mapping[str, Any]) -> None:
+        if not self.deck_ledger_enabled:
+            raise RandomnessError("deck moves require an oracle deck ledger")
+        if self._finalized:
+            raise RandomnessError("randomness oracle has already been finalized")
+        self._pending_deck_moves.append(validate_deck_move(move))
 
     def set_scope_provider(
         self,
@@ -987,6 +1080,11 @@ class RandomOracle:
             raise RandomnessError("randomness outcome must be 'completed' or 'aborted'")
         if reason is not None and not isinstance(reason, str):
             raise RandomnessError("randomness reveal reason must be a string or null")
+        deck_ledger_tail: dict[str, Any] = (
+            {DECK_LEDGER_TAIL_FIELD: list(self._pending_deck_moves)}
+            if self.deck_ledger_enabled
+            else {}
+        )
         payload_without_hash = canonicalize(
             {
                 "format_version": RANDOMNESS_FORMAT_VERSION,
@@ -997,6 +1095,7 @@ class RandomOracle:
                 "reason": reason,
                 "operation_count": self._operation_sequence,
                 "receipt_summary": canonicalize(dict(receipt_summary or {})),
+                **deck_ledger_tail,
             }
         )
         self._commit_manifest()
@@ -1015,6 +1114,7 @@ class RandomOracle:
             "Randomness derivation material revealed",
             self.reveal_payload,
         )
+        self._pending_deck_moves.clear()
         self._finalized = True
         return dict(self.reveal_payload)
 
@@ -1066,6 +1166,16 @@ class RandomOracle:
             if not isinstance(resolved_state, Mapping):
                 raise RandomnessError("random state provider must return an object")
         canonical_state = validate_random_state(resolved_state)
+        deck_moves_included = 0
+        if self.deck_ledger_enabled:
+            if DECK_LEDGER_STATE_FIELD in canonical_state:
+                raise RandomnessError(
+                    f"random state cannot supply the reserved {DECK_LEDGER_STATE_FIELD!r} field"
+                )
+            deck_moves_included = len(self._pending_deck_moves)
+            canonical_state[DECK_LEDGER_STATE_FIELD] = copy.deepcopy(
+                self._pending_deck_moves
+            )
         state_hash = random_state_digest(canonical_state)
 
         # The manifest is the first audit-chain record.  It must be committed
@@ -1093,6 +1203,7 @@ class RandomOracle:
             state_digest=state_hash,
             context_digest=context_hash,
             previous_audit_hash=previous_hash,
+            deck_moves_included=deck_moves_included,
         )
 
     def _stream(self, purpose: str, prepared: _PreparedOperation) -> _HMACStream:
@@ -1150,6 +1261,7 @@ class RandomOracle:
             chain_payload,
         )
         self._previous_audit_hash = payload["audit_hash"]
+        del self._pending_deck_moves[: prepared.deck_moves_included]
         self._records.append(payload)
         self._emit("randomness", "Authoritative random operation", payload)
 
@@ -1288,6 +1400,9 @@ class UnverifiedRandomOracle(RandomOracle):
 
 __all__ = [
     "AUDIT_CHAIN_TAG",
+    "DECK_LEDGER_STATE_FIELD",
+    "DECK_LEDGER_TAIL_FIELD",
+    "DECK_LEDGER_VERSION",
     "HMAC_STREAM_TAG",
     "MAX_SAFE_JSON_INTEGER",
     "ONLINE_MASTER_TAG",
@@ -1322,6 +1437,7 @@ __all__ = [
     "transcript_record_hash",
     "uint32_be",
     "uint64_be",
+    "validate_deck_move",
     "validate_participant_contributions",
     "validate_random_scope",
     "validate_random_state",

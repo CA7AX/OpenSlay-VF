@@ -119,6 +119,7 @@ SHA256(
 | `participants` | 训练模式为空数组；在线模式为按座位升序排列的收据数组 |
 | `server_commitment` | 训练模式为 `null`；在线模式为 64 个小写十六进制字符组成的摘要 |
 | `deck_source` | 若要获得已验证结果，必须是 `oracle`；缺失或取其他值会在完成其他所有适用检查后得到 `Unverified`。 |
+| `deck_ledger_version` | JSON 整数 `1` 表示声明[牌堆动作账册](#牌堆动作账册)。当 `deck_source = oracle` 时，缺失或取其他值会在完成其他所有适用检查后得到 `Unverified`。 |
 
 `public_rules_hash` 可作为扩展字段存在；其独立的规则层语义见[公开规则](#公开规则)。
 
@@ -176,7 +177,7 @@ result, proof, previous_audit_hash, audit_hash
 | `targets` | JSON 安全整数数组 |
 
 随机操作前，引擎记录规范的权威 `state` 对象。符合规范的状态具有 JSON 整数
-`state_version = 1` 和非空字符串 `kind`；可以添加其他规范字段。OpenSlay 引擎状态包含隐藏牌区和当前结算状态，不是面向某位玩家删减信息后的界面快照。验证器只校验规范形式、`state_version`、`kind` 和摘要；它不证明状态完整，也不证明该状态是前一状态的合法转换。
+`state_version = 1` 和非空字符串 `kind`；可以添加其他规范字段。OpenSlay 引擎状态包含隐藏牌区和当前结算状态，不是面向某位玩家删减信息后的界面快照。验证器校验规范形式、`state_version`、`kind` 和摘要；它不证明状态完整，也不证明该状态是前一状态的合法转换。清单声明[牌堆动作账册](#牌堆动作账册)时，状态字段 `deck_ledger` 保留给账册使用，验证器还会重放该字段，并核对 `engine` 状态中的 `zones.draw_pile`。
 
 状态与操作上下文按以下方式绑定：
 
@@ -337,6 +338,28 @@ limit = 2^256 - (2^256 mod b)
 `SHA256(utf8(canonical_json(candidates)))` 为
 `8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39`。完整公开候选列表随包提供，路径为 `data/prototype-deck-v1.json`。
 
+### 牌堆动作账册
+
+清单若包含 JSON 整数 `deck_ledger_version = 1`，即声明每张离开或回到摸牌堆的牌都有记录。此时每个操作的 `state` 都包含 `deck_ledger`，即自上一次操作以来（第一次操作则为自清单以来）的牌堆动作数组；公开记录包含 `deck_ledger_tail`，即最后一次操作之后的动作数组。二者都由现有摘要绑定：状态摘要把操作的动作绑定进其 HMAC 上下文和审计哈希，公开记录则把尾部动作绑定进 `final_audit_hash`。每个动作恰为以下形式之一：
+
+```json
+{"move": "draw", "card_id": 17, "player_id": 2}
+{"move": "take", "card_id": 18, "player_id": 1}
+{"move": "restore", "card_ids": [19, 18], "player_id": 1}
+```
+
+牌 ID 为正的 JSON 安全整数，`card_ids` 不含重复值，`player_id` 为 uint32 或 `null`。`draw` 表示牌进入手牌；`take` 表示为技能观看而取走；`restore` 表示把观看的牌放回。
+
+验证器在所有纪元之间重放同一个摸牌堆。牌堆按自底向上排列，最后一个元素即下一张被摸的牌，这也是洗牌 `result` 的顺序：
+
+1. 每次操作之前，按顺序应用其 `deck_ledger`。`draw` 和 `take` 要求 `card_id` 等于牌堆顶牌的 `card_id`，并移除该牌。`take` 把牌加入当前观看，同一次观看中的所有 `take` 必须使用相同的 `player_id`。`draw` 会结束任何进行中的观看。
+2. `restore` 要求存在 `player_id` 相同的进行中观看，且每个 ID 都必须是本次观看中取走的牌。这些牌放回堆顶，使 `card_ids[0]` 成为下一张被摸的牌，随后观看结束。未放回的已取走牌不再回到牌堆。
+3. 若操作的 `state.kind` 为 `engine`，则 `state.zones.draw_pile` 必须存在，并与重放得到的牌堆完全一致（包括牌对象本身）。
+4. 牌堆纪元洗牌要求重放得到的牌堆为空；其 `result` 成为新的牌堆。
+5. 最后一次操作之后，应用 `deck_ledger_tail`。
+
+任一违反都为 `Invalid`。重放成功证明：每次摸牌都取自已验证洗牌结果的堆顶；没有提前重洗任何纪元；记录的每个引擎摸牌堆只因已声明的动作而改变。它不证明观看技能的触发合法，不证明放回顺序出自观看玩家的选择，也不证明摸到的牌确实进入所记录玩家的手牌；这些需要对已接受行动日志做引擎重放。最后一次操作之后的动作只由终局公开记录绑定，不受任何实时检查点约束。
+
 ## 策牒哈希链
 
 每条随机性记录都在前一个哈希上继续延伸：
@@ -367,6 +390,7 @@ SHA256(
 | `reason` | 可选；若存在，须为字符串或 `null` |
 | `operation_count` | 非负 JSON 安全整数，且等于操作记录数量 |
 | `receipt_summary` | 对象；模式专属要求见下文 |
+| `deck_ledger_tail` | 清单声明牌堆动作账册版本 1 时必填的数组；见[牌堆动作账册](#牌堆动作账册) |
 | `final_audit_hash` | 64 个小写十六进制字符组成的公开记录链头 |
 
 ### 训练模式公开记录
@@ -404,6 +428,7 @@ SHA256(
   `Unverified`；这一兼容分支不会重建收据或种子，也不会重算 HMAC 结果或牌堆纪元。
 - 在 `training` 或 `online` 模式下，完成收据、种子和操作重算后，若清单
   `deck_source` 不是 `oracle`，或清单、任一操作上下文或公开上下文中的任意规范字段名为 `unverified_adapter`，结果为 `Unverified`，而不是已验证声明。
+- 当 `deck_source = oracle` 时，若清单的 `deck_ledger_version` 缺失或不是 JSON 整数 `1`，结果为 `Unverified`：牌堆顺序或许已得到证明，但发牌没有。版本为 1 时，[牌堆动作账册](#牌堆动作账册)重放必须成功；无论 `deck_source` 为何，重放失败均为 `Invalid`。
 - 已验证策牒必须包含至少一个有效的原型牌堆纪元。中止的策牒若没有纪元则为
   `Incomplete`；完成且使用 oracle 牌堆的策牒若没有纪元则为 `Invalid`。
 - 成功的在线模式策牒为 `Verified fair`；成功的训练模式策牒为

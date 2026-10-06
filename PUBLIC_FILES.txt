@@ -24,6 +24,7 @@ cli.py
 data/openslay-prototype-v1.partial.json
 data/openslay-prototype-v2.json
 data/prototype-deck-v1.json
+deck_ledger.py
 localization.py
 operations.py
 oracle.py
@@ -33,6 +34,7 @@ rule_inputs.py
 rules.py
 test-vectors/protocol-v2.json
 tests/conftest.py
+tests/test_deck_ledger.py
 tests/test_public_boundary.py
 tests/test_rule_coverage.py
 tests/test_standalone.py

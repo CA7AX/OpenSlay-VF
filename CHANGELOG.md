@@ -5,6 +5,11 @@ follow semantic versioning independently from transcript protocol versions.
 
 ## Unreleased
 
+- Add the deck ledger (`deck_ledger_version` 1). An oracle deck now records every draw, skill inspection, and restore; each operation state carries the moves since the previous operation, and the reveal carries `deck_ledger_tail`.
+- Replay those moves on one draw pile across epochs: every draw must take the top card, restores must return only cards under the same player's open inspection, an epoch may only be shuffled once the pile is empty, and every `engine` state's `zones.draw_pile` must equal the replayed pile.
+- Report `deck_moves_verified` in JSON, the CLI, and the verified summary.
+- Breaking for verdicts: an oracle-deck transcript without a supported deck ledger declaration is now `Unverified`, because its deck order is proved but its dealing is not. The transcript wire format remains protocol v2.
+
 ## 0.3.1 - 2026-10-05
 
 - Describe the 5p/8p hidden identity deal (`setup.identity`): only the two public role lists, in fixed order, with the lord excluded from the shuffle.

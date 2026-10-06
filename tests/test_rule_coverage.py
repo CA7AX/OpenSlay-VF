@@ -32,7 +32,9 @@ def _report(purpose: str, operation: str, inputs: dict[str, Any], *, state: dict
     cards = copy.deepcopy(DECK)
     random_oracle.shuffle("deck.epoch.1", cards, metadata={"deck_epoch": 1, "start_card_id": 1, "card_count": 144})
     if state is not None:
-        random_oracle.set_state_provider(lambda: state)
+        # Engine snapshots must carry the draw pile the deck ledger replays.
+        engine_state = state if "zones" in state else {**state, "zones": {"draw_pile": cards}}
+        random_oracle.set_state_provider(lambda: engine_state)
     scope = {"scope_id": "test", "parent_scope_id": None, "event_id": None, "event": "test", "round": 0, "phase": "play", "skill": None, "owner": owner, "actor": actor, "targets": list(targets)}
     if operation == "probability":
         random_oracle.probability(purpose, inputs["numerator"], inputs["denominator"], scope=scope)
