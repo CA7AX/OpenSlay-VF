@@ -45,6 +45,9 @@ _VERIFICATION_SUMMARIES_ZH = {
     "The match aborted before an authoritative deck epoch was recorded.": (
         "对局在权威牌堆纪元写入前已经中止。"
     ),
+    "Deck dealing is unverified because the manifest declares no deck ledger.": (
+        "随机性清单未声明牌堆动作账册，因此无法验证发牌顺序。"
+    ),
 }
 
 _WITNESS_SUMMARIES_ZH = {
@@ -179,6 +182,10 @@ def _format_verification(
         f"{bilingual_label('已验证牌堆纪元', 'Deck epochs verified', language)}: "
         f"{report.deck_epochs_verified}"
     )
+    lines.append(
+        f"{bilingual_label('已验证牌堆动作', 'Deck moves verified', language)}: "
+        f"{report.deck_moves_verified}"
+    )
     if report.failure_sequence is not None:
         lines.append(
             f"{bilingual_label('失败记录序号', 'Failure record sequence', language)}: "
@@ -302,13 +309,15 @@ def _verification_summary_zh(
 ) -> str:
     if report.status == "Verified fair":
         return (
-            f"验策相合：已核验 {report.operation_count} 次随机操作和 "
-            f"{report.deck_epochs_verified} 个牌堆纪元。"
+            f"验策相合：已核验 {report.operation_count} 次随机操作、"
+            f"{report.deck_epochs_verified} 个牌堆纪元和 "
+            f"{report.deck_moves_verified} 次牌堆动作。"
         )
     if report.status == "Verified deterministic":
         return (
-            f"定策可验：已核验 {report.operation_count} 次随机操作和 "
-            f"{report.deck_epochs_verified} 个牌堆纪元。"
+            f"定策可验：已核验 {report.operation_count} 次随机操作、"
+            f"{report.deck_epochs_verified} 个牌堆纪元和 "
+            f"{report.deck_moves_verified} 次牌堆动作。"
         )
     translated = _VERIFICATION_SUMMARIES_ZH.get(report.summary)
     if translated:

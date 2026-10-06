@@ -10,9 +10,12 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
+from .deck_ledger import DeckLedgerReplay
 from .operations import execute_operation
 
 from .protocol import (
+    DECK_LEDGER_TAIL_FIELD,
+    DECK_LEDGER_VERSION,
     MAX_SAFE_JSON_INTEGER,
     RANDOMNESS_ALGORITHM,
     RANDOMNESS_FORMAT_VERSION,
@@ -106,6 +109,7 @@ class VerificationReport:
     reveal: dict[str, Any] | None = None
     operation_count: int = 0
     deck_epochs_verified: int = 0
+    deck_moves_verified: int = 0
     failure_sequence: int | None = None
     failure_operation_sequence: int | None = None
     failure_purpose: str | None = None
@@ -567,6 +571,9 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
     previous_hash = manifest_hash
     deck_epoch = 0
     next_deck_card_id = 1
+    deck_ledger = (
+        DeckLedgerReplay() if _declares_supported_deck_ledger(manifest) else None
+    )
     verified_events: list[dict[str, Any]] = []
     for expected_sequence, record in enumerate(random_records, start=1):
         context = _context(record)
@@ -615,6 +622,8 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
                 raise RandomnessError("audit hash does not match the operation record")
             previous_hash = expected_hash
 
+            if deck_ledger is not None:
+                deck_ledger.apply_state(context["state"])
             deck_update = _validate_deck_record(
                 context,
                 expected_epoch=deck_epoch + 1,
@@ -622,6 +631,8 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
             )
             if deck_update is not None:
                 deck_epoch, next_deck_card_id = deck_update
+                if deck_ledger is not None:
+                    deck_ledger.begin_epoch(context["result"])
             verified_events.append(context)
         except (RandomnessError, TypeError, ValueError) as exc:
             return _invalid(
@@ -633,8 +644,28 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
                 reveal=reveal,
                 operation_count=expected_sequence - 1,
                 deck_epochs=deck_epoch,
+                deck_moves=deck_ledger.moves_verified if deck_ledger else 0,
                 random_events=tuple(verified_events),
             )
+
+    deck_moves = 0
+    if deck_ledger is not None:
+        try:
+            if DECK_LEDGER_TAIL_FIELD not in reveal:
+                raise RandomnessError("reveal is missing its deck ledger tail")
+            deck_ledger.apply_moves(reveal[DECK_LEDGER_TAIL_FIELD], "reveal deck ledger tail")
+        except RandomnessError as exc:
+            return _invalid(
+                str(exc),
+                sequence=reveal_sequence,
+                manifest=manifest,
+                reveal=reveal,
+                operation_count=len(random_records),
+                deck_epochs=deck_epoch,
+                deck_moves=deck_ledger.moves_verified,
+                random_events=tuple(verified_events),
+            )
+        deck_moves = deck_ledger.moves_verified
 
     unverified_reason = _unverified_source_reason(
         manifest,
@@ -650,6 +681,7 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
             reveal=reveal,
             operation_count=len(random_records),
             deck_epochs_verified=deck_epoch,
+            deck_moves_verified=deck_moves,
             random_events=tuple(verified_events),
         )
 
@@ -682,14 +714,15 @@ def verify_records(records: list[dict[str, Any]]) -> VerificationReport:
     return VerificationReport(
         status=status,
         summary=(
-            f"{status}: {len(random_records)} random operations and "
-            f"{deck_epoch} deck epoch(s) verified."
+            f"{status}: {len(random_records)} random operations, "
+            f"{deck_epoch} deck epoch(s), and {deck_moves} deck move(s) verified."
         ),
         exit_code=0,
         manifest=manifest,
         reveal=reveal,
         operation_count=len(random_records),
         deck_epochs_verified=deck_epoch,
+        deck_moves_verified=deck_moves,
         random_events=tuple(verified_events),
     )
 
@@ -958,6 +991,16 @@ def _unverified_source_reason(
             "Authoritative deck order is unverified because deck_source is "
             f"{rendered}, not 'oracle'."
         )
+    if "deck_ledger_version" not in manifest:
+        return (
+            "Deck dealing is unverified because the manifest declares no "
+            "deck ledger."
+        )
+    if not _declares_supported_deck_ledger(manifest):
+        return (
+            "Deck dealing is unverified because deck_ledger_version "
+            f"{manifest.get('deck_ledger_version')!r} is not supported."
+        )
     if (
         _contains_unverified_adapter(manifest)
         or any(
@@ -967,6 +1010,11 @@ def _unverified_source_reason(
     ):
         return "Transcript contains values produced by the unverified RNG adapter."
     return None
+
+
+def _declares_supported_deck_ledger(manifest: dict[str, Any]) -> bool:
+    version = manifest.get("deck_ledger_version")
+    return type(version) is int and version == DECK_LEDGER_VERSION
 
 
 def _contains_unverified_adapter(value: Any) -> bool:
@@ -1310,6 +1358,7 @@ def _invalid(
     reveal: dict[str, Any] | None = None,
     operation_count: int = 0,
     deck_epochs: int = 0,
+    deck_moves: int = 0,
     random_events: tuple[dict[str, Any], ...] = (),
 ) -> VerificationReport:
     location = ""
@@ -1325,6 +1374,7 @@ def _invalid(
         reveal=reveal,
         operation_count=operation_count,
         deck_epochs_verified=deck_epochs,
+        deck_moves_verified=deck_moves,
         failure_sequence=sequence,
         failure_operation_sequence=operation_sequence,
         failure_purpose=purpose,

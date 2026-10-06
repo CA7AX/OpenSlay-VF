@@ -73,6 +73,7 @@ def _training_records() -> list[dict[str, Any]]:
         "commitment_published_order": None,
         "participants": [],
         "deck_source": "oracle",
+        "deck_ledger_version": 1,
     }
     master_seed = derive_training_master_seed(42, "test")
     previous = transcript_record_hash(
@@ -102,7 +103,13 @@ def _training_records() -> list[dict[str, Any]]:
         ),
         ("probability", "environment.thunder.self-damage", {"numerator": 1, "denominator": 4}),
     ]
+    pile: list[dict[str, Any]] = []
     for index, (operation, purpose, inputs) in enumerate(operation_specs, start=1):
+        # Two cards are drawn between the shuffle and the second operation.
+        deck_ledger = [
+            {"move": "draw", "card_id": card["card_id"], "player_id": 0}
+            for card in reversed(pile[-2:])
+        ]
         context = {
             "format_version": RANDOMNESS_FORMAT_VERSION,
             "algorithm": RANDOMNESS_ALGORITHM,
@@ -112,7 +119,12 @@ def _training_records() -> list[dict[str, Any]]:
             "purpose_counter": 0,
             "scope": _scope(),
             "inputs": inputs,
-            "state": {"state_version": 1, "kind": "test", "step": index},
+            "state": {
+                "state_version": 1,
+                "kind": "test",
+                "step": index,
+                "deck_ledger": deck_ledger,
+            },
             "result": None,
             "proof": {},
             "previous_audit_hash": previous,
@@ -138,6 +150,8 @@ def _training_records() -> list[dict[str, Any]]:
             previous, "randomness", chain_payload
         )
         previous = context["audit_hash"]
+        if purpose == "deck.epoch.1":
+            pile = list(context["result"])
         records.append(
             {
                 "sequence": index + 1,
@@ -157,6 +171,12 @@ def _training_records() -> list[dict[str, Any]]:
         "reason": None,
         "operation_count": 2,
         "receipt_summary": {"winner_ids": [0]},
+        # After the two draws: inspect the next card, return it, then draw it.
+        "deck_ledger_tail": [
+            {"move": "take", "card_id": pile[-3]["card_id"], "player_id": 1},
+            {"move": "restore", "card_ids": [pile[-3]["card_id"]], "player_id": 1},
+            {"move": "draw", "card_id": pile[-3]["card_id"], "player_id": 1},
+        ],
     }
     reveal["final_audit_hash"] = transcript_record_hash(
         previous, "randomness_reveal", reveal
@@ -562,8 +582,12 @@ def test_human_report_supports_bilingual_chinese_and_english() -> None:
     )
     assert "OpenSlay 随机性验证报告 / OpenSlay Randomness Verification Report" in bilingual
     assert "验证状态 / Verification status: 定策可验 / Verified deterministic" in bilingual
-    assert "已核验 2 次随机操作和 1 个牌堆纪元" in bilingual
-    assert "Verified deterministic: 2 random operations and 1 deck epoch(s) verified." in bilingual
+    assert "已核验 2 次随机操作、1 个牌堆纪元和 5 次牌堆动作" in bilingual
+    assert (
+        "Verified deterministic: 2 random operations, 1 deck epoch(s), "
+        "and 5 deck move(s) verified."
+    ) in bilingual
+    assert "已验证牌堆动作 / Deck moves verified: 5" in bilingual
     assert verification.final_audit_hash in bilingual
     assert "本机见证 / Local witness: 完整 / Complete" in bilingual
     assert "此结果本身不证明这些检查点是在对局过程中保存的" in bilingual
@@ -584,10 +608,14 @@ def test_human_report_supports_bilingual_chinese_and_english() -> None:
 def test_verified_fair_uses_player_facing_chinese_without_changing_protocol() -> None:
     report = VerificationReport(
         status="Verified fair",
-        summary="Verified fair: 2 random operations and 1 deck epoch(s) verified.",
+        summary=(
+            "Verified fair: 2 random operations, 1 deck epoch(s), "
+            "and 3 deck move(s) verified."
+        ),
         exit_code=0,
         operation_count=2,
         deck_epochs_verified=1,
+        deck_moves_verified=3,
     )
 
     assert localized_status(report.status) == "验策相合 / Verified fair"
@@ -595,7 +623,7 @@ def test_verified_fair_uses_player_facing_chinese_without_changing_protocol() ->
     assert localized_status(report.status, "en") == "Verified fair"
     bilingual = format_human_report(report)
     assert "验证状态 / Verification status: 验策相合 / Verified fair" in bilingual
-    assert "验策相合：已核验 2 次随机操作和 1 个牌堆纪元" in bilingual
+    assert "验策相合：已核验 2 次随机操作、1 个牌堆纪元和 3 次牌堆动作" in bilingual
     assert "公平性已验证" not in bilingual
 
 

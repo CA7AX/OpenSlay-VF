@@ -64,6 +64,7 @@ OpenSlay 随机性验证报告 / OpenSlay Randomness Verification Report
 [… verification summary omitted …]
 随机操作数 / Random operations: 312
 已验证牌堆纪元 / Deck epochs verified: 2
+已验证牌堆动作 / Deck moves verified: 287
 终局审计哈希 / Final audit hash: 9f2c…e41a
 
 公开规则 / Public rules: 已验证 / Verified
@@ -93,6 +94,7 @@ $ echo $?
 - Online and deterministic-training seed derivation
 - State-bound HMAC-SHA256 results and proofs
 - `probability`, `choice`, `sample`, and `shuffle` operations
+- Every recorded draw, inspection, and restore replayed against the verified deck shuffles
 - State/context digests, purpose counters, global order, hash chain, reveal, and final audit hash
 - Optional local-witness consistency and public rule-input constraints
 
@@ -100,7 +102,7 @@ $ echo $?
 <td>
 
 - The quality of the original entropy or the server's honesty
-- The legality of transitions between recorded game states
+- The legality of transitions between recorded game states, including why an inspection happened or which hand a drawn card reached
 - That every client received the same live history
 - The correctness or completeness of every game rule
 - Match completion or fairness outside the published randomness protocol
@@ -273,6 +275,7 @@ presentation as the CLI without changing the underlying report objects.
 | [`oracle.py`](oracle.py) | Canonicalization, derivation, bounded HMAC streams, and generation |
 | [`operations.py`](operations.py) | Semantic `probability`, `choice`, `sample`, and `shuffle` operations |
 | [`verifier.py`](verifier.py) | Transcript loading, validation, and independent recomputation |
+| [`deck_ledger.py`](deck_ledger.py) | Draw-pile replay of recorded deck moves across epochs |
 | [`witness.py`](witness.py) | Local checkpoint and short-seal cross-checking |
 | [`rules.py`](rules.py) | Data-only public rules descriptors and input constraints |
 | [`cli.py`](cli.py) / [`localization.py`](localization.py) | CLI entry point, stable JSON, and Chinese, English, or bilingual human-readable reporting |

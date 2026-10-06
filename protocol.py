@@ -12,6 +12,9 @@ from typing import Any
 
 from .oracle import (
     AUDIT_CHAIN_TAG,
+    DECK_LEDGER_STATE_FIELD,
+    DECK_LEDGER_TAIL_FIELD,
+    DECK_LEDGER_VERSION,
     HMAC_STREAM_TAG,
     MAX_SAFE_JSON_INTEGER,
     ONLINE_MASTER_TAG,
@@ -50,6 +53,7 @@ from .oracle import (
     transcript_record_hash,
     uint32_be,
     uint64_be,
+    validate_deck_move,
     validate_participant_contributions,
     validate_random_scope,
     validate_random_state,
@@ -89,6 +93,9 @@ def validate_participants(
 
 __all__ = [
     "AUDIT_CHAIN_TAG",
+    "DECK_LEDGER_STATE_FIELD",
+    "DECK_LEDGER_TAIL_FIELD",
+    "DECK_LEDGER_VERSION",
     "DIGEST_RE",
     "HMAC_STREAM_TAG",
     "HMACStream",
@@ -128,6 +135,7 @@ __all__ = [
     "transcript_record_hash",
     "uint32_be",
     "uint64_be",
+    "validate_deck_move",
     "validate_match_id",
     "validate_participant_contributions",
     "validate_participants",
