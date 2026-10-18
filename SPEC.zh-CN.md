@@ -336,7 +336,7 @@ limit = 2^256 - (2^256 mod b)
 `start_card_id` 从 1 开始，每个纪元增加 144；`card_count` 等于候选值数量。每个纪元都按权威的洗牌前顺序包含随包提供的 144 张原型牌，并使用连续的运行时
 `card_id`。把这些 ID 替换为 `1..144` 后，
 `SHA256(utf8(canonical_json(candidates)))` 为
-`8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39`。完整公开候选列表随包提供，路径为 `data/prototype-deck-v1.json`。
+`5e928eaaf2112d84e92763ca467a38d37ffcb642d484c37bbe650980fad85b8f`。完整公开候选列表随包提供，路径为 `data/prototype-deck-v1.json`。
 
 ### 牌堆动作账册
 

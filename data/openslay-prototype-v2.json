@@ -29,7 +29,7 @@
     {
       "deck_candidates": {
         "card_count": 144,
-        "normalized_candidates_sha256": "8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39"
+        "normalized_candidates_sha256": "5e928eaaf2112d84e92763ca467a38d37ffcb642d484c37bbe650980fad85b8f"
       },
       "operation": "shuffle",
       "purpose_pattern": "deck\\.epoch\\.[1-9][0-9]*",
@@ -1122,6 +1122,6 @@
       "rule_reference": "虚拟牌 · 花色候选"
     }
   ],
-  "public_rules_hash": "28082a21c60dba9602f1874ad7bf01e5cfc77ce8188971d838e6fcd27ffc0d73",
+  "public_rules_hash": "af7614cc1f63122efc9e32ba3815e78b36c0c0f35b9c9d621a76e8f9c0146af9",
   "ruleset_id": "openslay-prototype-v2"
 }

@@ -396,56 +396,56 @@
       "card_id": 57,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♥"
     },
     {
       "card_id": 58,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♠"
     },
     {
       "card_id": 59,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♦"
     },
     {
       "card_id": 60,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♣"
     },
     {
       "card_id": 61,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♥"
     },
     {
       "card_id": 62,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♣"
     },
     {
       "card_id": 63,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♦"
     },
     {
       "card_id": 64,
       "category": "basic",
       "info": {},
-      "name": "桃",
+      "name": "杏",
       "suit": "♠"
     },
     {
@@ -1009,6 +1009,6 @@
       "suit": "♣"
     }
   ],
-  "canonical_sha256": "8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39",
+  "canonical_sha256": "5e928eaaf2112d84e92763ca467a38d37ffcb642d484c37bbe650980fad85b8f",
   "card_count": 144
 }
