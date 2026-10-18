@@ -443,7 +443,7 @@ the candidate count. Every epoch contains the bundled 144-card prototype in
 its authoritative pre-shuffle order with contiguous runtime `card_id` values.
 After replacing those IDs with `1..144`,
 `SHA256(utf8(canonical_json(candidates)))` is
-`8f4503267ca0c9d2fe0a8835121ab2cc9c4b79165ea64641f562f15a8c6ffc39`.
+`5e928eaaf2112d84e92763ca467a38d37ffcb642d484c37bbe650980fad85b8f`.
 The complete public candidate list ships in `data/prototype-deck-v1.json`.
 
 ### Deck ledger

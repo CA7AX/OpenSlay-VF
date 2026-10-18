@@ -5,6 +5,7 @@ follow semantic versioning independently from transcript protocol versions.
 
 ## Unreleased
 
+- Rename the basic healing card 桃 to 杏 in the public prototype deck (8 cards). The deck digest changes to `5e928eaaf2112d84e92763ca467a38d37ffcb642d484c37bbe650980fad85b8f` and the bundled v2 descriptor's `public_rules_hash` to `af7614cc1f63122efc9e32ba3815e78b36c0c0f35b9c9d621a76e8f9c0146af9`. Breaking for verdicts: transcripts recorded with the old 桃 deck no longer match the bundled deck. The immutable historical v1 partial descriptor is unchanged.
 - Add the deck ledger (`deck_ledger_version` 1). An oracle deck now records every draw, skill inspection, and restore; each operation state carries the moves since the previous operation, and the reveal carries `deck_ledger_tail`.
 - Replay those moves on one draw pile across epochs: every draw must take the top card, restores must return only cards under the same player's open inspection, an epoch may only be shuffled once the pile is empty, and every `engine` state's `zones.draw_pile` must equal the replayed pile.
 - Report `deck_moves_verified` in JSON, the CLI, and the verified summary.
