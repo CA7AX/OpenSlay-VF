@@ -3,7 +3,7 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
-## Unreleased
+## 0.4.0 - 2026-10-20
 
 - Describe the 5p/8p identity draft in the bundled v2 descriptor (77 purposes): `setup.seat` samples one table seat from an ordered subset of `[0, ..., 7]`, `setup.draft.lord-hand` samples two generals from the roster without its 8 lord generals, and `setup.draft.hand` samples one to three generals from the full roster. The descriptor's `public_rules_hash` becomes `dad4fa5d36a8bd4b7395eb3137586c49af529f474bac9835706a76b621409817`.
 - Let `candidate_constraints.ordered_subset_of` hold JSON integers as well as strings. A universe must use one exact type and candidates must match it, so booleans and numeric strings are rejected. Older verifiers reject descriptors with integer universes as invalid.
