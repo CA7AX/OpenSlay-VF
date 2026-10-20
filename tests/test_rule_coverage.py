@@ -118,10 +118,11 @@ def _setup_report(draws: list[tuple[str, str, dict[str, Any]]]):
     return verify_declared_rules(verification, DESCRIPTOR)
 
 
-def test_seat_binding_draws_one_ordered_table_seat() -> None:
-    for candidates in ([3], [0, 2, 5], list(range(8))):
-        assert _report("setup.seat", "sample", {"candidates": candidates, "count": 1}).status == "Verified"
-    for candidates, count in (([0, 2, 5], 2), ([8], 1), ([-1], 1), ([5, 2], 1), ([2, 2], 1), (["2"], 1), ([True], 1)):
+def test_seat_binding_draws_ordered_seats_or_slots() -> None:
+    # One free seat for a 随机 slot, or k of the slots oversubscribing a role.
+    for candidates, count in (([3], 1), ([0, 2, 5], 1), ([0, 2, 5], 2), (list(range(8)), 7), (list(range(8)), 8)):
+        assert _report("setup.seat", "sample", {"candidates": candidates, "count": count}).status == "Verified"
+    for candidates, count in (([0, 2, 5], 0), ([8], 1), ([-1], 1), ([5, 2], 1), ([2, 2], 1), (["2"], 1), ([True], 1)):
         result = _report("setup.seat", "sample", {"candidates": candidates, "count": count})
         assert result.status == "Invalid"
         assert result.failure_purpose == "setup.seat"
@@ -132,10 +133,9 @@ def test_lord_hand_draws_two_non_lord_generals() -> None:
     lords = [key for key in roster if "Lord" in key.split(":")[1]]
     others = [key for key in roster if key not in lords]
     assert len(lords) == 8
-    assert RULES["setup.draft.lord-hand"]["candidate_constraints"]["ordered_subset_of"] == others
+    assert RULES["setup.draft.lord-hand"]["input_constraints"]["candidates"]["equals"] == others
     assert _report("setup.draft.lord-hand", "sample", {"candidates": others, "count": 2}).status == "Verified"
-    assert _report("setup.draft.lord-hand", "sample", {"candidates": others[5:], "count": 2}).status == "Verified"
-    for candidates, count in ((others, 1), (others, 3), (roster, 2), ([lords[0], *others[:3]], 2), (list(reversed(others)), 2)):
+    for candidates, count in ((others[5:], 2), (others, 1), (others, 3), (roster, 2), ([lords[0], *others[:3]], 2), (list(reversed(others)), 2)):
         result = _report("setup.draft.lord-hand", "sample", {"candidates": candidates, "count": count})
         assert result.status == "Invalid"
         assert result.failure_purpose == "setup.draft.lord-hand"
@@ -154,13 +154,16 @@ def test_draft_hand_draws_up_to_three_roster_generals() -> None:
 
 def test_identity_deal_may_precede_seat_binding_and_draft() -> None:
     roster = RULES["setup.roster"]["input_constraints"]["candidates"]["equals"]
-    others = RULES["setup.draft.lord-hand"]["candidate_constraints"]["ordered_subset_of"]
+    others = RULES["setup.draft.lord-hand"]["input_constraints"]["candidates"]["equals"]
     draws = [
         ("setup.identity", "shuffle", {"candidates": ["忠臣", "反贼", "反贼", "内奸"]}),
-        ("setup.seat", "sample", {"candidates": [1, 2, 3, 4], "count": 1}),
-        ("setup.seat", "sample", {"candidates": [1, 3, 4], "count": 1}),
+        # Three lobby slots ask for 反贼, which the deal gave two seats.
+        ("setup.seat", "sample", {"candidates": [0, 2, 4], "count": 2}),
+        ("setup.seat", "sample", {"candidates": [1, 3], "count": 1}),
         ("setup.draft.lord-hand", "sample", {"candidates": others, "count": 2}),
         *(("setup.draft.hand", "sample", {"candidates": roster[seat * 10:seat * 10 + 10], "count": 3}) for seat in range(1, 5)),
+        # A seat whose own pool ran short tops up from the remaining roster.
+        ("setup.draft.hand", "sample", {"candidates": roster[60:], "count": 1}),
     ]
     result = _setup_report(draws)
     assert result.status == "Verified", result.summary

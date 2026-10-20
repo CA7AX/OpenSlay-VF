@@ -207,9 +207,9 @@ input constraints; they do not certify trigger legality or legal state
 transitions. Roster-fill checks known IDs/order/counts, but cannot reconstruct
 which seats were manually chosen from legacy bootstrap state. Identity-deal
 checks accept either public role list without binding it to the match mode.
-Seat and draft checks prove the seat range, roster order, the lord hand's
-non-lord pool, and counts, but not that seats were unbound or that offered
-generals had not already been dealt.
+Seat and draft checks prove the seat/slot range, roster order, the lord
+hand's exact non-lord pool, and counts, but not which slots requested a role,
+that seats were unbound, or that offered generals had not already been dealt.
 Redirect checks living-player membership and excludes source/owner, but does not prove distance
 eligibility or completeness of the target subset. These limits apply even when
 all supplied operations return `Verified`.
