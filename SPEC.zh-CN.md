@@ -477,6 +477,19 @@ SHA256("OpenSlay/public-rules/v1" || utf8(canonical_json(descriptor_without_hash
 
 格式 1 继续兼容。格式 2 沿用 `OpenSlay/public-rules/v1` 的自哈希公式，不修改策牒协议。每条规则必须提供非空输入、牌堆、候选或状态约束；未知规则字段与状态约束类型会被拒绝。
 
-`candidate_constraints.ordered_subset_of` 要求候选为公开集合的非空、无重复、有序子序列。`state_constraints.kind` 支持：`owned_card_pool`（目标完整手牌/装备键，含区域与索引）、`hand_pool`（某个角色完整手牌及正数弃牌数量）、`horse_pool`（首个目标完整马匹集合）、`debuff_pool`（行动者完整控制/环境键）、`neighbor_hand_pool`（存活邻位完整手牌，必须指定 `direction: upper/lower`）、`redirect_targets`（排除来源与持有者的存活有序无重复角色集合）、`horse_probability`（持有者或行动者的 `min(4, 1 + 马匹数)` 分子）、`environment_counter`（首个目标的 `min(8, active_count)` 分子，必须指定 `effect: 洪水/山火`）。
+`candidate_constraints.ordered_subset_of` 要求候选为公开集合的非空、无重复、有序子序列。公开集合须为非空、无重复的数组，成员全为 JSON 字符串或全为 JSON 整数（软件包 0.4.0 起支持整数）；候选的 JSON 类型须与集合一致，`true` 不等于 `1`，`"1"` 也不等于 `1`。`state_constraints.kind` 支持：`owned_card_pool`（目标完整手牌/装备键，含区域与索引）、`hand_pool`（某个角色完整手牌及正数弃牌数量）、`horse_pool`（首个目标完整马匹集合）、`debuff_pool`（行动者完整控制/环境键）、`neighbor_hand_pool`（存活邻位完整手牌，必须指定 `direction: upper/lower`）、`redirect_targets`（排除来源与持有者的存活有序无重复角色集合）、`horse_probability`（持有者或行动者的 `min(4, 1 + 马匹数)` 分子）、`environment_counter`（首个目标的 `min(8, active_count)` 分子，必须指定 `effect: 洪水/山火`）。
+
+随包描述文件对开局用途使用以下有限输入约束。验证器不规定开局用途之间的先后顺序；身份局选将依次记录 `setup.identity`、`setup.seat` 和选将候选。
+
+| 用途 | 操作 | 候选集合 | 数量 |
+| --- | --- | --- | --- |
+| `setup.roster` | `sample` | 完整公开武将名单 | 4、5 或 8 |
+| `setup.roster.fill` | `sample` | 完整武将名单的有序子集 | 1 至 3 |
+| `setup.identity` | `shuffle` | 五人或八人局的非主公身份列表 | 全部 |
+| `setup.seat` | `sample` | 座位编号 `[0, ..., 7]` 的有序子集 | 恰好 1 |
+| `setup.draft.lord-hand` | `sample` | 除 8 名主公武将外的武将名单有序子集 | 恰好 2 |
+| `setup.draft.hand` | `sample` | 完整武将名单的有序子集 | 1 至 3 |
+
+这些开局检查不会把身份列表或座位范围绑定到对局模式，不证明座位候选恰为尚未绑定的座位，也不证明选将候选排除了已发出的武将。
 
 状态约束要求 `state_version: 1, kind: engine`。缺少此类状态返回 `Partial`，用途列入 `incomplete_purposes`，不增加已检查操作计数；畸形引擎状态或不一致输入返回 `Invalid`。允许的未知用途仍为 `Partial`。`Verified` 仅证明所提供操作满足声明的有限输入约束，不认证状态、不证明触发及状态转移合法性，也不证明仅检查集合成员关系的候选池完整。改向目标不验证距离及候选子集完整性；武将补齐不从旧开局状态重建手选座位。

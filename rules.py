@@ -245,7 +245,7 @@ def _validate_descriptor(descriptor: dict[str, Any], actual_hash: str) -> None:
             if not isinstance(candidate, dict) or set(candidate) != {"ordered_subset_of"}:
                 raise ValueError(f"operation rule {index} has malformed candidate constraints")
             values = candidate["ordered_subset_of"]
-            if not isinstance(values, list) or not values or any(not isinstance(value, str) for value in values) or len(set(values)) != len(values):
+            if not isinstance(values, list) or not values or _universe_type(values) is None or len(set(values)) != len(values):
                 raise ValueError(f"operation rule {index} has invalid public candidate universe")
         if "state_constraints" in rule:
             validate_state_rule(rule["state_constraints"], rule["operation"])
@@ -278,6 +278,16 @@ def _validate_descriptor(descriptor: dict[str, Any], actual_hash: str) -> None:
                 raise ValueError(f"operation rule {index} has invalid deck digest")
 
 
+def _universe_type(values: list[Any]) -> type | None:
+    """Return str or int when every universe ID has that exact type."""
+
+    # Exact types keep JSON booleans out of integer universes (True == 1).
+    for kind in (str, int):
+        if all(type(value) is kind for value in values):
+            return kind
+    return None
+
+
 def _rule_matches(rule: dict[str, Any], purpose: Any) -> bool:
     if not isinstance(purpose, str):
         return False
@@ -297,10 +307,11 @@ def _operation_rule_error(event: dict[str, Any], rule: dict[str, Any]) -> str:
     if candidate_rule is not None:
         candidates = inputs.get("candidates")
         universe = candidate_rule["ordered_subset_of"]
-        if not isinstance(candidates, list) or not candidates or any(not isinstance(value, str) or value not in universe for value in candidates):
-            return "candidates are outside the public roster"
+        kind = _universe_type(universe)
+        if not isinstance(candidates, list) or not candidates or any(type(value) is not kind or value not in universe for value in candidates):
+            return "candidates are outside the public candidate universe"
         if len(set(candidates)) != len(candidates) or candidates != [value for value in universe if value in candidates]:
-            return "roster candidates must be unique and in public roster order"
+            return "candidates must be unique and in public universe order"
     constraints = rule.get("input_constraints", {})
     for field, constraint in constraints.items():
         if field not in inputs:
