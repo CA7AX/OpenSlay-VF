@@ -132,6 +132,187 @@
       }
     },
     {
+      "candidate_constraints": {
+        "ordered_subset_of": [
+          "openslay.characters.wu_general_ling_tong:WuGeneralLingTong",
+          "openslay.characters.wu_general_lv_meng:WuGeneralLvMeng",
+          "openslay.characters.wu_general_zhou_tai:WuGeneralZhouTai",
+          "openslay.characters.wu_minister_zhou_yu:WuMinisterZhouYu",
+          "openslay.characters.wu_female_da_qiao:WuFemaleDaQiao",
+          "openslay.characters.wu_general_tai_shi_ci:WuGeneralTaiShiCi",
+          "openslay.characters.wu_female_sun_shang_xiang:WuFemaleSunShangXiang",
+          "openslay.characters.wu_lord_sun_quan:WuLordSunQuan",
+          "openslay.characters.wu_lord_sun_ce:WuLordSunCe",
+          "openslay.characters.wu_female_xiao_qiao:WuFemaleXiaoQiao",
+          "openslay.characters.wu_minister_zhang_zhao:WuMinisterZhangZhao",
+          "openslay.characters.wu_female_bu_lian_shi:WuFemaleBuLianShi",
+          "openslay.characters.wu_general_gan_ning:WuGeneralGanNing",
+          "openslay.characters.wu_general_cheng_pu:WuGeneralChengPu",
+          "openslay.characters.wu_general_jiang_qin:WuGeneralJiangQin",
+          "openslay.characters.wu_minister_zhu_ge_jin:WuMinisterZhuGeJin",
+          "openslay.characters.wu_minister_kan_ze:WuMinisterKanZe",
+          "openslay.characters.wu_minister_lu_xun:WuMinisterLuXun",
+          "openslay.characters.wu_minister_lu_su:WuMinisterLuSu",
+          "openslay.characters.wu_general_huang_gai:WuGeneralHuangGai",
+          "openslay.characters.qun_general_hua_xiong:QunGeneralHuaXiong",
+          "openslay.characters.qun_general_lv_bu:QunGeneralLvBu",
+          "openslay.characters.qun_minister_shen_pei:QunMinisterShenPei",
+          "openslay.characters.qun_general_zhang_xiu:QunGeneralZhangXiu",
+          "openslay.characters.qun_general_wen_chou:QunGeneralWenChou",
+          "openslay.characters.qun_general_zhu_jun:QunGeneralZhuJun",
+          "openslay.characters.qun_minister_li_ru:QunMinisterLiRu",
+          "openslay.characters.qun_minister_ju_shou:QunMinisterJuShou",
+          "openslay.characters.qun_minister_tian_feng:QunMinisterTianFeng",
+          "openslay.characters.qun_general_huang_fu_song:QunGeneralHuangFuSong",
+          "openslay.characters.qun_female_zhu_rong_fu_ren:QunFemaleZhuRongFuRen",
+          "openslay.characters.qun_lord_dong_zhuo:QunLordDongZhuo",
+          "openslay.characters.qun_female_cai_shi:QunFemaleCaiShi",
+          "openslay.characters.qun_lord_yuan_shao:QunLordYuanShao",
+          "openslay.characters.qun_minister_xu_you:QunMinisterXuYou",
+          "openslay.characters.qun_female_diao_chan:QunFemaleDiaoChan",
+          "openslay.characters.qun_female_zou_shi:QunFemaleZouShi",
+          "openslay.characters.qun_minister_chen_gong:QunMinisterChenGong",
+          "openslay.characters.qun_general_yan_liang:QunGeneralYanLiang",
+          "openslay.characters.qun_general_gao_shun:QunGeneralGaoShun",
+          "openslay.characters.shu_general_guan_yu:ShuGeneralGuanYu",
+          "openslay.characters.shu_lord_liu_bei:ShuLordLiuBei",
+          "openslay.characters.shu_lord_liu_chan:ShuLordLiuChan",
+          "openslay.characters.shu_female_wu_shi:ShuFemaleWuShi",
+          "openslay.characters.shu_general_jiang_wei:ShuGeneralJiangWei",
+          "openslay.characters.shu_minister_pang_tong:ShuMinisterPangTong",
+          "openslay.characters.shu_general_zhang_fei:ShuGeneralZhangFei",
+          "openslay.characters.shu_minister_xu_shu:ShuMinisterXuShu",
+          "openslay.characters.shu_minister_fa_zheng:ShuMinisterFaZheng",
+          "openslay.characters.shu_female_gan_fu_ren:ShuFemaleGanFuRen",
+          "openslay.characters.shu_female_mi_fu_ren:ShuFemaleMiFuRen",
+          "openslay.characters.shu_minister_jiang_wan:ShuMinisterJiangWan",
+          "openslay.characters.shu_minister_zhu_ge_liang:ShuMinisterZhuGeLiang",
+          "openslay.characters.shu_minister_fei_yi:ShuMinisterFeiYi",
+          "openslay.characters.shu_general_zhao_yun:ShuGeneralZhaoYun",
+          "openslay.characters.shu_general_ma_dai:ShuGeneralMaDai",
+          "openslay.characters.shu_general_ma_chao:ShuGeneralMaChao",
+          "openslay.characters.shu_general_wei_yan:ShuGeneralWeiYan",
+          "openslay.characters.shu_general_huang_zhong:ShuGeneralHuangZhong",
+          "openslay.characters.shu_female_huang_yue_ying:ShuFemaleHuangYueYing",
+          "openslay.characters.wei_general_yue_jin:WeiGeneralYueJin",
+          "openslay.characters.wei_general_yu_jin:WeiGeneralYuJin",
+          "openslay.characters.wei_female_bian_fu_ren:WeiFemaleBianFuRen",
+          "openslay.characters.wei_minister_si_ma_yi:WeiMinisterSiMaYi",
+          "openslay.characters.wei_general_xia_hou_dun:WeiGeneralXiaHouDun",
+          "openslay.characters.wei_general_xia_hou_yuan:WeiGeneralXiaHouYuan",
+          "openslay.characters.wei_general_zhang_liao:WeiGeneralZhangLiao",
+          "openslay.characters.wei_general_zhang_he:WeiGeneralZhangHe",
+          "openslay.characters.wei_general_xu_huang:WeiGeneralXuHuang",
+          "openslay.characters.wei_lord_cao_pi:WeiLordCaoPi",
+          "openslay.characters.wei_general_cao_ren:WeiGeneralCaoRen",
+          "openslay.characters.wei_lord_cao_cao:WeiLordCaoCao",
+          "openslay.characters.wei_female_cao_jie:WeiFemaleCaoJie",
+          "openslay.characters.wei_female_zhen_mi:WeiFemaleZhenMi",
+          "openslay.characters.wei_minister_cheng_yu:WeiMinisterChengYu",
+          "openslay.characters.wei_minister_xun_yu:WeiMinisterXunYu",
+          "openslay.characters.wei_minister_xun_you:WeiMinisterXunYou",
+          "openslay.characters.wei_female_cai_wen_ji:WeiFemaleCaiWenJi",
+          "openslay.characters.wei_minister_jia_xu:WeiMinisterJiaXu",
+          "openslay.characters.wei_minister_guo_jia:WeiMinisterGuoJia"
+        ]
+      },
+      "input_constraints": {
+        "count": {
+          "maximum": 3,
+          "minimum": 1
+        }
+      },
+      "operation": "sample",
+      "purpose": "setup.draft.hand",
+      "rule_reference": "身份模式 · 其余座位各自暗选：至多 3 名随机候选武将"
+    },
+    {
+      "input_constraints": {
+        "candidates": {
+          "equals": [
+            "openslay.characters.wu_general_ling_tong:WuGeneralLingTong",
+            "openslay.characters.wu_general_lv_meng:WuGeneralLvMeng",
+            "openslay.characters.wu_general_zhou_tai:WuGeneralZhouTai",
+            "openslay.characters.wu_minister_zhou_yu:WuMinisterZhouYu",
+            "openslay.characters.wu_female_da_qiao:WuFemaleDaQiao",
+            "openslay.characters.wu_general_tai_shi_ci:WuGeneralTaiShiCi",
+            "openslay.characters.wu_female_sun_shang_xiang:WuFemaleSunShangXiang",
+            "openslay.characters.wu_female_xiao_qiao:WuFemaleXiaoQiao",
+            "openslay.characters.wu_minister_zhang_zhao:WuMinisterZhangZhao",
+            "openslay.characters.wu_female_bu_lian_shi:WuFemaleBuLianShi",
+            "openslay.characters.wu_general_gan_ning:WuGeneralGanNing",
+            "openslay.characters.wu_general_cheng_pu:WuGeneralChengPu",
+            "openslay.characters.wu_general_jiang_qin:WuGeneralJiangQin",
+            "openslay.characters.wu_minister_zhu_ge_jin:WuMinisterZhuGeJin",
+            "openslay.characters.wu_minister_kan_ze:WuMinisterKanZe",
+            "openslay.characters.wu_minister_lu_xun:WuMinisterLuXun",
+            "openslay.characters.wu_minister_lu_su:WuMinisterLuSu",
+            "openslay.characters.wu_general_huang_gai:WuGeneralHuangGai",
+            "openslay.characters.qun_general_hua_xiong:QunGeneralHuaXiong",
+            "openslay.characters.qun_general_lv_bu:QunGeneralLvBu",
+            "openslay.characters.qun_minister_shen_pei:QunMinisterShenPei",
+            "openslay.characters.qun_general_zhang_xiu:QunGeneralZhangXiu",
+            "openslay.characters.qun_general_wen_chou:QunGeneralWenChou",
+            "openslay.characters.qun_general_zhu_jun:QunGeneralZhuJun",
+            "openslay.characters.qun_minister_li_ru:QunMinisterLiRu",
+            "openslay.characters.qun_minister_ju_shou:QunMinisterJuShou",
+            "openslay.characters.qun_minister_tian_feng:QunMinisterTianFeng",
+            "openslay.characters.qun_general_huang_fu_song:QunGeneralHuangFuSong",
+            "openslay.characters.qun_female_zhu_rong_fu_ren:QunFemaleZhuRongFuRen",
+            "openslay.characters.qun_female_cai_shi:QunFemaleCaiShi",
+            "openslay.characters.qun_minister_xu_you:QunMinisterXuYou",
+            "openslay.characters.qun_female_diao_chan:QunFemaleDiaoChan",
+            "openslay.characters.qun_female_zou_shi:QunFemaleZouShi",
+            "openslay.characters.qun_minister_chen_gong:QunMinisterChenGong",
+            "openslay.characters.qun_general_yan_liang:QunGeneralYanLiang",
+            "openslay.characters.qun_general_gao_shun:QunGeneralGaoShun",
+            "openslay.characters.shu_general_guan_yu:ShuGeneralGuanYu",
+            "openslay.characters.shu_female_wu_shi:ShuFemaleWuShi",
+            "openslay.characters.shu_general_jiang_wei:ShuGeneralJiangWei",
+            "openslay.characters.shu_minister_pang_tong:ShuMinisterPangTong",
+            "openslay.characters.shu_general_zhang_fei:ShuGeneralZhangFei",
+            "openslay.characters.shu_minister_xu_shu:ShuMinisterXuShu",
+            "openslay.characters.shu_minister_fa_zheng:ShuMinisterFaZheng",
+            "openslay.characters.shu_female_gan_fu_ren:ShuFemaleGanFuRen",
+            "openslay.characters.shu_female_mi_fu_ren:ShuFemaleMiFuRen",
+            "openslay.characters.shu_minister_jiang_wan:ShuMinisterJiangWan",
+            "openslay.characters.shu_minister_zhu_ge_liang:ShuMinisterZhuGeLiang",
+            "openslay.characters.shu_minister_fei_yi:ShuMinisterFeiYi",
+            "openslay.characters.shu_general_zhao_yun:ShuGeneralZhaoYun",
+            "openslay.characters.shu_general_ma_dai:ShuGeneralMaDai",
+            "openslay.characters.shu_general_ma_chao:ShuGeneralMaChao",
+            "openslay.characters.shu_general_wei_yan:ShuGeneralWeiYan",
+            "openslay.characters.shu_general_huang_zhong:ShuGeneralHuangZhong",
+            "openslay.characters.shu_female_huang_yue_ying:ShuFemaleHuangYueYing",
+            "openslay.characters.wei_general_yue_jin:WeiGeneralYueJin",
+            "openslay.characters.wei_general_yu_jin:WeiGeneralYuJin",
+            "openslay.characters.wei_female_bian_fu_ren:WeiFemaleBianFuRen",
+            "openslay.characters.wei_minister_si_ma_yi:WeiMinisterSiMaYi",
+            "openslay.characters.wei_general_xia_hou_dun:WeiGeneralXiaHouDun",
+            "openslay.characters.wei_general_xia_hou_yuan:WeiGeneralXiaHouYuan",
+            "openslay.characters.wei_general_zhang_liao:WeiGeneralZhangLiao",
+            "openslay.characters.wei_general_zhang_he:WeiGeneralZhangHe",
+            "openslay.characters.wei_general_xu_huang:WeiGeneralXuHuang",
+            "openslay.characters.wei_general_cao_ren:WeiGeneralCaoRen",
+            "openslay.characters.wei_female_cao_jie:WeiFemaleCaoJie",
+            "openslay.characters.wei_female_zhen_mi:WeiFemaleZhenMi",
+            "openslay.characters.wei_minister_cheng_yu:WeiMinisterChengYu",
+            "openslay.characters.wei_minister_xun_yu:WeiMinisterXunYu",
+            "openslay.characters.wei_minister_xun_you:WeiMinisterXunYou",
+            "openslay.characters.wei_female_cai_wen_ji:WeiFemaleCaiWenJi",
+            "openslay.characters.wei_minister_jia_xu:WeiMinisterJiaXu",
+            "openslay.characters.wei_minister_guo_jia:WeiMinisterGuoJia"
+          ]
+        },
+        "count": {
+          "equals": 2
+        }
+      },
+      "operation": "sample",
+      "purpose": "setup.draft.lord-hand",
+      "rule_reference": "身份模式 · 主公选将：8 名主公武将另加 2 名随机非主公武将"
+    },
+    {
       "input_constraints": {
         "candidates": {
           "one_of": [
@@ -349,6 +530,29 @@
       "operation": "sample",
       "purpose": "setup.roster.fill",
       "rule_reference": "OpenSlay roster · fill unspecified 2v2 seats"
+    },
+    {
+      "candidate_constraints": {
+        "ordered_subset_of": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      "input_constraints": {
+        "count": {
+          "maximum": 8,
+          "minimum": 1
+        }
+      },
+      "operation": "sample",
+      "purpose": "setup.seat",
+      "rule_reference": "身份模式 · 发身份后抽取：身份请求超额时抽取得到该身份的大厅席位，随机座位的玩家抽取空座"
     },
     {
       "input_constraints": {
@@ -1122,6 +1326,6 @@
       "rule_reference": "虚拟牌 · 花色候选"
     }
   ],
-  "public_rules_hash": "af7614cc1f63122efc9e32ba3815e78b36c0c0f35b9c9d621a76e8f9c0146af9",
+  "public_rules_hash": "14024aa1ef63e486531c1deb2e5d1dc4fd40f98e025131f71562ee00a67ba540",
   "ruleset_id": "openslay-prototype-v2"
 }

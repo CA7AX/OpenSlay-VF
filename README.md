@@ -193,10 +193,10 @@ formulas are normative in [SPEC.md](SPEC.md).
 
 Public data-only descriptors can constrain an operation's `purpose`, type, and
 inputs without publishing the event engine that implements the rule. The
-[bundled prototype descriptor](data/openslay-prototype-v2.json) covers all 74
+[bundled prototype descriptor](data/openslay-prototype-v2.json) covers all 77
 current operation purposes. It checks fixed skill odds, roster membership and
-counts, the ordered 5p/8p hidden-role shuffle pools (excluding the lord),
-control-card and suit pools, and candidates against recorded hands,
+counts, the ordered 5p/8p hidden-role shuffle pools (excluding the lord), the
+identity draft's seat draw and general hands, control-card and suit pools, and candidates against recorded hands,
 equipment, debuffs, and living neighbors. Horse-count and environment-counter
 probabilities are checked against the recorded pre-operation state.
 
@@ -207,6 +207,9 @@ input constraints; they do not certify trigger legality or legal state
 transitions. Roster-fill checks known IDs/order/counts, but cannot reconstruct
 which seats were manually chosen from legacy bootstrap state. Identity-deal
 checks accept either public role list without binding it to the match mode.
+Seat and draft checks prove the seat/slot range, roster order, the lord
+hand's exact non-lord pool, and counts, but not which slots requested a role,
+that seats were unbound, or that offered generals had not already been dealt.
 Redirect checks living-player membership and excludes source/owner, but does not prove distance
 eligibility or completeness of the target subset. These limits apply even when
 all supplied operations return `Verified`.

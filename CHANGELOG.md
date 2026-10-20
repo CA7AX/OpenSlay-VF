@@ -3,8 +3,10 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
-## Unreleased
+## 0.4.0 - 2026-10-20
 
+- Describe the 5p/8p identity draft in the bundled v2 descriptor (77 purposes): `setup.seat` samples 1 to 8 entries from an ordered subset of `[0, ..., 7]` (lobby slots for an oversubscribed role, or free seats for a random slot), `setup.draft.lord-hand` samples two generals from exactly the roster without its 8 lord generals, and `setup.draft.hand` samples one to three generals from an ordered subset of the full roster, possibly more than once per seat. The descriptor's `public_rules_hash` becomes `14024aa1ef63e486531c1deb2e5d1dc4fd40f98e025131f71562ee00a67ba540`.
+- Let `candidate_constraints.ordered_subset_of` hold JSON integers as well as strings. A universe must use one exact type and candidates must match it, so booleans and numeric strings are rejected. Older verifiers reject descriptors with integer universes as invalid.
 - Rename the basic healing card 桃 to 杏 in the public prototype deck (8 cards). The deck digest changes to `5e928eaaf2112d84e92763ca467a38d37ffcb642d484c37bbe650980fad85b8f` and the bundled v2 descriptor's `public_rules_hash` to `af7614cc1f63122efc9e32ba3815e78b36c0c0f35b9c9d621a76e8f9c0146af9`. Breaking for verdicts: transcripts recorded with the old 桃 deck no longer match the bundled deck. The immutable historical v1 partial descriptor is unchanged.
 - Add the deck ledger (`deck_ledger_version` 1). An oracle deck now records every draw, skill inspection, and restore; each operation state carries the moves since the previous operation, and the reveal carries `deck_ledger_tail`.
 - Replay those moves on one draw pile across epochs: every draw must take the top card, restores must return only cards under the same player's open inspection, an epoch may only be shuffled once the pile is empty, and every `engine` state's `zones.draw_pile` must equal the replayed pile.

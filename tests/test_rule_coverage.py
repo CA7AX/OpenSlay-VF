@@ -102,6 +102,75 @@ def test_identity_deal_uses_only_public_ordered_role_lists() -> None:
         assert result.failure_purpose == "setup.identity"
 
 
+def _setup_report(draws: list[tuple[str, str, dict[str, Any]]]):
+    logger = CaptureLogger()
+    random_oracle = RandomOracle.for_training(42, ruleset_hash="11" * 32, logger=logger)
+    random_oracle.set_deck_source("oracle")
+    for purpose, operation, inputs in draws:
+        if operation == "shuffle":
+            random_oracle.shuffle(purpose, copy.deepcopy(inputs["candidates"]))
+        else:
+            random_oracle.sample(purpose, inputs["candidates"], inputs["count"])
+    random_oracle.shuffle("deck.epoch.1", copy.deepcopy(DECK), metadata={"deck_epoch": 1, "start_card_id": 1, "card_count": 144})
+    random_oracle.finalize(outcome="completed", receipt_summary={"winner_ids": [0]})
+    verification = verify_records(logger.records)
+    assert verification.status == "Verified deterministic", verification.summary
+    return verify_declared_rules(verification, DESCRIPTOR)
+
+
+def test_seat_binding_draws_ordered_seats_or_slots() -> None:
+    # One free seat for a 随机 slot, or k of the slots oversubscribing a role.
+    for candidates, count in (([3], 1), ([0, 2, 5], 1), ([0, 2, 5], 2), (list(range(8)), 7), (list(range(8)), 8)):
+        assert _report("setup.seat", "sample", {"candidates": candidates, "count": count}).status == "Verified"
+    for candidates, count in (([0, 2, 5], 0), ([8], 1), ([-1], 1), ([5, 2], 1), ([2, 2], 1), (["2"], 1), ([True], 1)):
+        result = _report("setup.seat", "sample", {"candidates": candidates, "count": count})
+        assert result.status == "Invalid"
+        assert result.failure_purpose == "setup.seat"
+
+
+def test_lord_hand_draws_two_non_lord_generals() -> None:
+    roster = RULES["setup.roster"]["input_constraints"]["candidates"]["equals"]
+    lords = [key for key in roster if "Lord" in key.split(":")[1]]
+    others = [key for key in roster if key not in lords]
+    assert len(lords) == 8
+    assert RULES["setup.draft.lord-hand"]["input_constraints"]["candidates"]["equals"] == others
+    assert _report("setup.draft.lord-hand", "sample", {"candidates": others, "count": 2}).status == "Verified"
+    for candidates, count in ((others[5:], 2), (others, 1), (others, 3), (roster, 2), ([lords[0], *others[:3]], 2), (list(reversed(others)), 2)):
+        result = _report("setup.draft.lord-hand", "sample", {"candidates": candidates, "count": count})
+        assert result.status == "Invalid"
+        assert result.failure_purpose == "setup.draft.lord-hand"
+
+
+def test_draft_hand_draws_up_to_three_roster_generals() -> None:
+    roster = RULES["setup.roster"]["input_constraints"]["candidates"]["equals"]
+    for count in (1, 2, 3):
+        assert _report("setup.draft.hand", "sample", {"candidates": roster, "count": count}).status == "Verified"
+    assert _report("setup.draft.hand", "sample", {"candidates": roster[7:9], "count": 2}).status == "Verified"
+    for candidates, count in ((roster, 0), (roster, 4), (roster[:2] * 2, 2), (["not-a-character"], 1), (list(reversed(roster)), 1)):
+        result = _report("setup.draft.hand", "sample", {"candidates": candidates, "count": count})
+        assert result.status == "Invalid"
+        assert result.failure_purpose == "setup.draft.hand"
+
+
+def test_identity_deal_may_precede_seat_binding_and_draft() -> None:
+    roster = RULES["setup.roster"]["input_constraints"]["candidates"]["equals"]
+    others = RULES["setup.draft.lord-hand"]["input_constraints"]["candidates"]["equals"]
+    draws = [
+        ("setup.identity", "shuffle", {"candidates": ["忠臣", "反贼", "反贼", "内奸"]}),
+        # Three lobby slots ask for 反贼, which the deal gave two seats.
+        ("setup.seat", "sample", {"candidates": [0, 2, 4], "count": 2}),
+        ("setup.seat", "sample", {"candidates": [1, 3], "count": 1}),
+        ("setup.draft.lord-hand", "sample", {"candidates": others, "count": 2}),
+        *(("setup.draft.hand", "sample", {"candidates": roster[seat * 10:seat * 10 + 10], "count": 3}) for seat in range(1, 5)),
+        # A seat whose own pool ran short tops up from the remaining roster.
+        ("setup.draft.hand", "sample", {"candidates": roster[60:], "count": 1}),
+    ]
+    result = _setup_report(draws)
+    assert result.status == "Verified", result.summary
+    # The prototype deck shuffle follows the draft.
+    assert result.checked_operation_count == len(draws) + 1
+
+
 @pytest.mark.parametrize("purpose", ["virtual-card.suit", "skill.random-control-card.name"])
 def test_fixed_choice_pools_reject_subsets_and_reordering(purpose: str) -> None:
     candidates = RULES[purpose]["input_constraints"]["candidates"]["equals"]
@@ -187,10 +256,10 @@ def test_descriptor_is_self_hashed_and_has_no_catch_all() -> None:
     assert DESCRIPTOR["public_rules_hash"] == descriptor_hash(DESCRIPTOR)
     patterns = [rule["purpose_pattern"] for rule in DESCRIPTOR["operation_rules"] if "purpose_pattern" in rule]
     assert patterns == [r"deck\.epoch\.[1-9][0-9]*"]
-    assert len(DESCRIPTOR["operation_rules"]) == 74
+    assert len(DESCRIPTOR["operation_rules"]) == 77
 
 
-@pytest.mark.parametrize("change", ["unknown_field", "unknown_state_kind", "wrong_operation", "missing_direction", "empty_constraints", "empty_input_operator", "duplicate_universe", "floating_version"])
+@pytest.mark.parametrize("change", ["unknown_field", "unknown_state_kind", "wrong_operation", "missing_direction", "empty_constraints", "empty_input_operator", "duplicate_universe", "mixed_universe", "boolean_universe", "floating_version"])
 def test_format_two_rejects_unsupported_or_empty_constraints(change: str) -> None:
     descriptor = copy.deepcopy(DESCRIPTOR)
     rule = next(rule for rule in descriptor["operation_rules"] if rule.get("purpose") == "skill.shu.fei-yi.upper-neighbor.steal-hand-card")
@@ -208,6 +277,10 @@ def test_format_two_rejects_unsupported_or_empty_constraints(change: str) -> Non
         rule["input_constraints"] = {"candidates": {}}
     elif change == "duplicate_universe":
         rule["candidate_constraints"] = {"ordered_subset_of": ["same", "same"]}
+    elif change == "mixed_universe":
+        rule["candidate_constraints"] = {"ordered_subset_of": [0, "1"]}
+    elif change == "boolean_universe":
+        rule["candidate_constraints"] = {"ordered_subset_of": [False, True]}
     else:
         descriptor["format_version"] = 2.0
     with pytest.raises(ValueError):

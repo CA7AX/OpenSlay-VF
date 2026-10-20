@@ -703,7 +703,7 @@ authenticated externally.
 
 Descriptor formats 1 and 2 use the unchanged `OpenSlay/public-rules/v1` self-hash formula. This is a descriptor extension, not a transcript protocol change; format-1 descriptors remain supported. Format 2 requires each selector to carry nonempty input, deck, candidate, or state constraints. Unknown rule fields and state kinds are rejected.
 
-`candidate_constraints: {"ordered_subset_of": ["id", ...]}` requires a nonempty, duplicate-free subsequence of the public universe in the declared order. `state_constraints` declares one finite `kind`; it requires an engine snapshot (`state_version: 1`, `kind: "engine"`). Supported kinds are:
+`candidate_constraints: {"ordered_subset_of": ["id", ...]}` requires a nonempty, duplicate-free subsequence of the public universe in the declared order. The universe is a nonempty, duplicate-free array whose members are either all JSON strings or all JSON integers (package 0.4.0 added integers); a candidate must have the same JSON type as the universe, so `true` never matches `1` and `"1"` never matches `1`. `state_constraints` declares one finite `kind`; it requires an engine snapshot (`state_version: 1`, `kind: "engine"`). Supported kinds are:
 
 | Kind | Checked input |
 | --- | --- |
@@ -715,5 +715,18 @@ Descriptor formats 1 and 2 use the unchanged `OpenSlay/public-rules/v1` self-has
 | `redirect_targets` | Unique sorted living player IDs excluding scope actor and owner; distance and subset completeness are not checked |
 | `horse_probability` | Numerator `min(4, 1 + horse count)` of scope owner, falling back to actor |
 | `environment_counter` | Numerator `min(8, active_count)` for the first scope target; requires `effect` (`洪水` or `山火`) |
+
+The bundled descriptor uses these finite input constraints for match setup. The verifier imposes no order between setup purposes; the identity draft records `setup.identity`, then `setup.seat`, then the draft hands.
+
+| Purpose | Operation | Candidate universe | Count |
+| --- | --- | --- | --- |
+| `setup.roster` | `sample` | Exactly the full public roster | 4, 5, or 8 |
+| `setup.roster.fill` | `sample` | Ordered subset of the full roster | 1 to 3 |
+| `setup.identity` | `shuffle` | Exactly the 5p or 8p non-lord role list | Whole list |
+| `setup.seat` | `sample` | Ordered subset of `[0, ..., 7]`: lobby slots requesting an oversubscribed role, or free seats for a random slot | 1 to 8 (at most the candidate count) |
+| `setup.draft.lord-hand` | `sample` | Exactly the roster without its 8 lord generals | Exactly 2 |
+| `setup.draft.hand` | `sample` | Ordered subset of the full roster | 1 to 3 |
+
+These setup checks do not bind a role list or seat range to the match mode, prove that seat candidates are exactly the requesting slots or unbound seats, or prove that draft candidates exclude generals already dealt. A seat may record more than one `setup.draft.hand` draw when it tops up from the full roster.
 
 Malformed engine evidence or inconsistent inputs are `Invalid`. Unavailable engine state or required scope bindings are `Partial`, listed separately as `incomplete_purposes`; such operations do not increment `checked_operation_count`. Unknown purposes remain `Partial` when allowed by the descriptor. `Verified` means all supplied operations passed the declared finite input constraints. It does not authenticate snapshots, prove trigger/transition legality, or prove every candidate pool is complete where a rule checks membership only.
