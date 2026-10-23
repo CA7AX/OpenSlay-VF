@@ -193,7 +193,7 @@ formulas are normative in [SPEC.md](SPEC.md).
 
 Public data-only descriptors can constrain an operation's `purpose`, type, and
 inputs without publishing the event engine that implements the rule. The
-[bundled prototype descriptor](data/openslay-prototype-v2.json) covers all 77
+[bundled prototype descriptor](data/openslay-prototype-v3.json) covers all 103
 current operation purposes. It checks fixed skill odds, roster membership and
 counts, the ordered 5p/8p hidden-role shuffle pools (excluding the lord), the
 identity draft's seat draw and general hands, control-card and suit pools, and candidates against recorded hands,
@@ -201,8 +201,11 @@ equipment, debuffs, and living neighbors. Horse-count and environment-counter
 probabilities are checked against the recorded pre-operation state.
 
 Unknown future purposes, or missing state or scope bindings required by a described operation,
-still return **Partial**. The historical [v1 partial descriptor](data/openslay-prototype-v1.partial.json)
-remains available by explicit path. Format-2 descriptors define finite public
+still return **Partial**. The [v2 descriptor](data/openslay-prototype-v2.json)
+holds the odds in force before the 2026-10 character balance pass; check older
+transcripts with `--rules openslay-prototype-v2`. The historical
+[v1 partial descriptor](data/openslay-prototype-v1.partial.json) remains
+available by explicit path or as `openslay-prototype-v1.partial`. Format-2 descriptors define finite public
 input constraints; they do not certify trigger legality or legal state
 transitions. Roster-fill checks known IDs/order/counts, but cannot reconstruct
 which seats were manually chosen from legacy bootstrap state. Identity-deal
