@@ -17,6 +17,15 @@ from .rule_inputs import state_rule_error, validate_state_rule
 
 RuleStatus = Literal["Verified", "Partial", "Not checked", "Invalid"]
 
+# ``bundled`` names the current descriptor.  Earlier descriptors stay loadable
+# by ruleset ID so transcripts recorded under an older ruleset still verify.
+BUNDLED_RULESET_ID = "openslay-prototype-v3"
+BUNDLED_DESCRIPTORS = {
+    "openslay-prototype-v1.partial": "data/openslay-prototype-v1.partial.json",
+    "openslay-prototype-v2": "data/openslay-prototype-v2.json",
+    "openslay-prototype-v3": "data/openslay-prototype-v3.json",
+}
+
 
 @dataclass(frozen=True)
 class RuleVerificationReport:
@@ -40,10 +49,11 @@ class RuleVerificationReport:
 
 def load_ruleset(path: str | Path) -> dict[str, Any]:
     try:
-        if str(path) == "bundled":
+        name = BUNDLED_RULESET_ID if str(path) == "bundled" else str(path)
+        if name in BUNDLED_DESCRIPTORS:
             raw = (
                 files("openslay_rng_verifier")
-                .joinpath("data/openslay-prototype-v2.json")
+                .joinpath(BUNDLED_DESCRIPTORS[name])
                 .read_text(encoding="utf-8")
             )
         else:
@@ -361,6 +371,8 @@ def _operation_rule_error(event: dict[str, Any], rule: dict[str, Any]) -> str:
 
 
 __all__ = [
+    "BUNDLED_DESCRIPTORS",
+    "BUNDLED_RULESET_ID",
     "RuleVerificationReport",
     "RuleStatus",
     "descriptor_hash",

@@ -256,7 +256,23 @@ def test_descriptor_is_self_hashed_and_has_no_catch_all() -> None:
     assert DESCRIPTOR["public_rules_hash"] == descriptor_hash(DESCRIPTOR)
     patterns = [rule["purpose_pattern"] for rule in DESCRIPTOR["operation_rules"] if "purpose_pattern" in rule]
     assert patterns == [r"deck\.epoch\.[1-9][0-9]*"]
-    assert len(DESCRIPTOR["operation_rules"]) == 77
+    assert DESCRIPTOR["ruleset_id"] == "openslay-prototype-v3"
+    assert len(DESCRIPTOR["operation_rules"]) == 103
+
+
+def test_previous_v2_descriptor_stays_bundled_by_ruleset_id() -> None:
+    # Transcripts recorded before the 2026-10 balance pass keep their odds.
+    descriptor = load_ruleset("openslay-prototype-v2")
+    assert descriptor == load_ruleset(ROOT / "data/openslay-prototype-v2.json")
+    assert descriptor["public_rules_hash"] == "14024aa1ef63e486531c1deb2e5d1dc4fd40f98e025131f71562ee00a67ba540"
+    assert len(descriptor["operation_rules"]) == 77
+    old = {rule["purpose"]: rule for rule in descriptor["operation_rules"] if "purpose" in rule}
+    purpose = "skill.wu.sun-shang-xiang.active.damage"
+    assert old[purpose]["input_constraints"]["numerator"] == {"equals": 3}
+    assert RULES[purpose]["input_constraints"]["numerator"] == {"equals": 1}
+    assert RULES[purpose]["input_constraints"]["denominator"] == {"equals": 2}
+    v2_report = _report(purpose, "probability", {"numerator": 3, "denominator": 4})
+    assert v2_report.status == "Invalid"
 
 
 @pytest.mark.parametrize("change", ["unknown_field", "unknown_state_kind", "wrong_operation", "missing_direction", "empty_constraints", "empty_input_operator", "duplicate_universe", "mixed_universe", "boolean_universe", "floating_version"])

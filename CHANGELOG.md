@@ -3,6 +3,12 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
+## 0.5.0 - 2026-10-24
+
+- Add the bundled `openslay-prototype-v3` descriptor (103 purposes) for the 2026-10 character balance pass and make it what `bundled` loads. Twenty fixed skill odds move one 25% step (for example `skill.wu.sun-shang-xiang.active.damage` 3/4 → 1/2 and `skill.shu.fa-zheng.skill-card-target.cancel-card` 1/4 → 1/2), and 26 new fixed-odds purposes describe the new skill rolls, such as `skill.wei.yue-jin.active.gain-rage` (1/2) and `skill.qun.chen-gong.enter-dying.recover-hp` (3/4). Its `public_rules_hash` is `233f269af3013c53f8032356097afe20cb0cb2204cda9d634d3afb2236e04dae`.
+- Keep `openslay-prototype-v2` unchanged. `load_ruleset` and `--rules` now also accept a bundled ruleset ID (`openslay-prototype-v1.partial`, `openslay-prototype-v2`, `openslay-prototype-v3`), so transcripts recorded before the balance pass still verify with `--rules openslay-prototype-v2`.
+- Breaking for verdicts: against `bundled`, transcripts recorded under the v2 odds now return `Invalid` for the changed purposes. The transcript wire format remains protocol v2.
+
 ## 0.4.0 - 2026-10-20
 
 - Describe the 5p/8p identity draft in the bundled v2 descriptor (77 purposes): `setup.seat` samples 1 to 8 entries from an ordered subset of `[0, ..., 7]` (lobby slots for an oversubscribed role, or free seats for a random slot), `setup.draft.lord-hand` samples two generals from exactly the roster without its 8 lord generals, and `setup.draft.hand` samples one to three generals from an ordered subset of the full roster, possibly more than once per seat. The descriptor's `public_rules_hash` becomes `14024aa1ef63e486531c1deb2e5d1dc4fd40f98e025131f71562ee00a67ba540`.

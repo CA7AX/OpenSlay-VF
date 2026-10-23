@@ -54,8 +54,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--rules",
         metavar="PATH",
         help=(
-            "用于核对随机输入的公开规则描述文件，或使用 'bundled' / "
-            "Public rule descriptor, or 'bundled', used to check declared RNG inputs"
+            "用于核对随机输入的公开规则描述文件，或使用 'bundled' 及随包规则 ID"
+            "（如 openslay-prototype-v2）/ "
+            "Public rule descriptor, 'bundled', or a bundled ruleset ID such as "
+            "openslay-prototype-v2, used to check declared RNG inputs"
         ),
     )
     parser.add_argument(
