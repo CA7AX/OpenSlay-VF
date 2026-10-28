@@ -144,6 +144,13 @@ openslay-rng-verify --version
 openslay-rng-verify /path/to/match.jsonl
 ```
 
+想先对比一次通过和一次失败，可按[示例策牒指南](examples/README.zh-CN.md)操作：它验证一局合成机器人对局，以及一份伪造副本：翻转的掷骰不影响对局结果，所有哈希也已重新封好。
+
+```bash
+openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled
+openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules bundled
+```
+
 常用组合：
 
 ```bash
@@ -258,6 +265,7 @@ print(rules.status, rules.descriptor_hash)
 | `rules.py` · `data/` | 数据化公开规则核对、原型牌堆与**部分**规则描述文件 |
 | `cli.py` · `localization.py` | 命令行入口、稳定 JSON 和中英双语人类报告 |
 | `test-vectors/` · `tests/` | 固定协议向量、篡改测试、边界与独立性回归测试 |
+| [`examples/`](examples) | 合成机器人对局策牒、重新封好哈希的伪造副本，以及验证二者的指南 |
 | `tools/` · `.github/workflows/` | 公共文件边界、构建/产物审计、CI 与发布门禁 |
 
 <a id="development"></a>

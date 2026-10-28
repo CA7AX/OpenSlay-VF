@@ -144,6 +144,16 @@ python -m pip install -e .
 openslay-rng-verify /path/to/match.jsonl --rules bundled
 ```
 
+To see a pass and a failure side by side, follow the
+[example trajectories guide](examples/README.md). It verifies a synthetic
+bot match and a forged copy that flips a roll without changing the match
+result and reseals every hash:
+
+```bash
+openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled
+openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules bundled
+```
+
 Add a local witness, request stable JSON, or select a report language:
 
 ```bash
@@ -287,6 +297,7 @@ presentation as the CLI without changing the underlying report objects.
 | [`cli.py`](cli.py) / [`localization.py`](localization.py) | CLI entry point, stable JSON, and Chinese, English, or bilingual human-readable reporting |
 | [`SPEC.md`](SPEC.md) / [`SPEC.zh-CN.md`](SPEC.zh-CN.md) | Normative public protocol |
 | [`test-vectors/`](test-vectors) | Synthetic, public protocol fixtures—not deployed credentials |
+| [`examples/`](examples) | A synthetic bot match transcript, a resealed forgery of it, and a guide to verifying both |
 
 The repository root is also the `openslay_rng_verifier` package directory. It
 is a complete standalone Python project: no game engine, character

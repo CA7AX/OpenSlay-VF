@@ -26,6 +26,10 @@ data/openslay-prototype-v2.json
 data/openslay-prototype-v3.json
 data/prototype-deck-v1.json
 deck_ledger.py
+examples/README.md
+examples/README.zh-CN.md
+examples/training-2v2-seed42.tampered-careful.json
+examples/training-2v2-seed42.valid.json
 localization.py
 operations.py
 oracle.py
@@ -36,6 +40,7 @@ rules.py
 test-vectors/protocol-v2.json
 tests/conftest.py
 tests/test_deck_ledger.py
+tests/test_examples.py
 tests/test_public_boundary.py
 tests/test_rule_coverage.py
 tests/test_standalone.py
