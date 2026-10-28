@@ -3,6 +3,10 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
+## Unreleased
+
+- Add [`examples/`](examples/README.md): a synthetic 2v2 training transcript (seed `42`, input `雪`) that verifies as `Verified deterministic` against the bundled v3 rules, a forgery of it, and an English and Chinese guide to verifying both, including recomputing the flipped roll by hand. The forgery flips the last roll, which does not change the match result, and repairs its proof, the deck ledger tail, and both hashes. It passes every check that does not need the seed and fails as `Invalid` at sequence 582 when the roll is recomputed.
+
 ## 0.5.0 - 2026-10-24
 
 - Add the bundled `openslay-prototype-v3` descriptor (103 purposes) for the 2026-10 character balance pass and make it what `bundled` loads. Twenty fixed skill odds move one 25% step (for example `skill.wu.sun-shang-xiang.active.damage` 3/4 → 1/2 and `skill.shu.fa-zheng.skill-card-target.cancel-card` 1/4 → 1/2), and 26 new fixed-odds purposes describe the new skill rolls, such as `skill.wei.yue-jin.active.gain-rage` (1/2) and `skill.qun.chen-gong.enter-dying.recover-hp` (3/4). Its `public_rules_hash` is `233f269af3013c53f8032356097afe20cb0cb2204cda9d634d3afb2236e04dae`.
