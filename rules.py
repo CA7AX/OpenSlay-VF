@@ -19,11 +19,12 @@ RuleStatus = Literal["Verified", "Partial", "Not checked", "Invalid"]
 
 # ``bundled`` names the current descriptor.  Earlier descriptors stay loadable
 # by ruleset ID so transcripts recorded under an older ruleset still verify.
-BUNDLED_RULESET_ID = "openslay-prototype-v3"
+BUNDLED_RULESET_ID = "openslay-prototype-v4"
 BUNDLED_DESCRIPTORS = {
     "openslay-prototype-v1.partial": "data/openslay-prototype-v1.partial.json",
     "openslay-prototype-v2": "data/openslay-prototype-v2.json",
     "openslay-prototype-v3": "data/openslay-prototype-v3.json",
+    "openslay-prototype-v4": "data/openslay-prototype-v4.json",
 }
 
 

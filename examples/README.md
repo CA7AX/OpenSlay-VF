@@ -25,8 +25,9 @@ only the randomness records from the game log. These are one
 Each `sequence` is the record's line number in the original game log, so the
 numbers have gaps. Every operation keeps the engine state it was bound to,
 which is why the files are large (about 740 KB each). The records were made
-under the 2026-10 balance odds, so they check against the bundled
-`openslay-prototype-v3` rules.
+under the 2026-10 balance odds. None of their rolls changed in the 2026-11
+pass, so they still check against the bundled rules. A transcript that uses a
+changed roll needs `--rules openslay-prototype-v3`.
 
 A training transcript discloses its seed. Anyone can recompute every roll, so
 the transcript proves it is internally consistent and reproducible. It does not
