@@ -92,7 +92,7 @@ $ echo $?
 协议编码、有界 HMAC 数据流、语义随机操作、通用随机预言机、策牒验证、本机见证核对、命令行界面与公开数据均由本仓库维护。完整协议见 [SPEC.zh-CN.md](SPEC.zh-CN.md)。应用创建通用随机预言机时，必须明确提供规则集哈希。
 
 > [!WARNING]
-> 所有 `0.x` 版本均为开发预发布，协议、报告格式与公开规则覆盖面仍可能演进。随包规则覆盖当前全部 103 个随机用途；未知用途或缺少必要状态仍返回 **Partial（部分）**。稳定的 `1.0` 版本仍要求完整规则描述文件，并将其哈希绑定进游戏策牒。
+> 所有 `0.x` 版本均为开发预发布，协议、报告格式与公开规则覆盖面仍可能演进。随包规则覆盖当前全部 104 个随机用途；未知用途或缺少必要状态仍返回 **Partial（部分）**。稳定的 `1.0` 版本仍要求完整规则描述文件，并将其哈希绑定进游戏策牒。
 
 <a id="scope"></a>
 
@@ -142,6 +142,13 @@ cd OpenSlay-VF
 python -m pip install -e .
 openslay-rng-verify --version
 openslay-rng-verify /path/to/match.jsonl
+```
+
+想先对比一次通过和一次失败，可按[示例策牒指南](examples/README.zh-CN.md)操作：它验证一局合成机器人对局，以及一份伪造副本：翻转的掷骰不影响对局结果，所有哈希也已重新封好。
+
+```bash
+openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled
+openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules bundled
 ```
 
 常用组合：
@@ -258,6 +265,7 @@ print(rules.status, rules.descriptor_hash)
 | `rules.py` · `data/` | 数据化公开规则核对、原型牌堆与**部分**规则描述文件 |
 | `cli.py` · `localization.py` | 命令行入口、稳定 JSON 和中英双语人类报告 |
 | `test-vectors/` · `tests/` | 固定协议向量、篡改测试、边界与独立性回归测试 |
+| [`examples/`](examples) | 合成机器人对局策牒、重新封好哈希的伪造副本，以及验证二者的指南 |
 | `tools/` · `.github/workflows/` | 公共文件边界、构建/产物审计、CI 与发布门禁 |
 
 <a id="development"></a>
@@ -284,6 +292,6 @@ python -m pytest -q
 
 ### 当前公开规则覆盖
 
-[默认 v3 描述文件](data/openslay-prototype-v3.json)覆盖 103 个当前用途：固定技能概率、武将候选及抽取数量、五人/八人身份暗发的固定顺序候选（不含主公）、身份局随机座位与选将候选、控制牌和花色候选，以及操作前状态中的完整手牌、装备、负面状态和存活邻位手牌。马匹数量和环境累计次数对应的动态概率也会核对。[v2 描述文件](data/openslay-prototype-v2.json)记录 2026 年 10 月武将平衡调整之前的概率，核对此前的策牒时请使用 `--rules openslay-prototype-v2`。旧的 [v1 部分描述文件](data/openslay-prototype-v1.partial.json)保留，可通过显式路径或 `openslay-prototype-v1.partial` 使用。
+[默认 v4 描述文件](data/openslay-prototype-v4.json)覆盖 104 个当前用途：固定技能概率、武将候选及抽取数量、五人/八人身份暗发的固定顺序候选（不含主公）、身份局随机座位与选将候选、控制牌和花色候选，以及操作前状态中的完整手牌、装备、负面状态和存活邻位手牌。马匹数量和环境累计次数对应的动态概率也会核对。[v3 描述文件](data/openslay-prototype-v3.json)记录 2026 年 11 月武将平衡调整之前的概率，核对此前的策牒时请使用 `--rules openslay-prototype-v3`。[v2 描述文件](data/openslay-prototype-v2.json)记录 2026 年 10 月武将平衡调整之前的概率，核对此前的策牒时请使用 `--rules openslay-prototype-v2`。旧的 [v1 部分描述文件](data/openslay-prototype-v1.partial.json)保留，可通过显式路径或 `openslay-prototype-v1.partial` 使用。
 
 这些检查只约束已记录的随机输入，不认证状态，也不重放合法状态转移。补齐武将检查已知候选、顺序和数量；旧的开局状态不足以重建手选座位。身份暗发检查接受两种公开候选列表，但不会将列表绑定到对局模式。座位与选将检查核对座位/席位范围、武将顺序、主公候选的完整非主公武将池及数量，但不证明哪些席位申请了该身份、座位尚未绑定，也不证明候选武将此前未发出。改向目标检查存活角色集合及排除来源/技能持有者，不证明距离合法性或候选子集完整性。即使返回 `Verified`，这些范围限制仍然适用。

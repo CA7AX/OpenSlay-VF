@@ -144,6 +144,16 @@ python -m pip install -e .
 openslay-rng-verify /path/to/match.jsonl --rules bundled
 ```
 
+To see a pass and a failure side by side, follow the
+[example trajectories guide](examples/README.md). It verifies a synthetic
+bot match and a forged copy that flips a roll without changing the match
+result and reseals every hash:
+
+```bash
+openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled
+openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules bundled
+```
+
 Add a local witness, request stable JSON, or select a report language:
 
 ```bash
@@ -193,7 +203,7 @@ formulas are normative in [SPEC.md](SPEC.md).
 
 Public data-only descriptors can constrain an operation's `purpose`, type, and
 inputs without publishing the event engine that implements the rule. The
-[bundled prototype descriptor](data/openslay-prototype-v3.json) covers all 103
+[bundled prototype descriptor](data/openslay-prototype-v4.json) covers all 104
 current operation purposes. It checks fixed skill odds, roster membership and
 counts, the ordered 5p/8p hidden-role shuffle pools (excluding the lord), the
 identity draft's seat draw and general hands, control-card and suit pools, and candidates against recorded hands,
@@ -201,7 +211,9 @@ equipment, debuffs, and living neighbors. Horse-count and environment-counter
 probabilities are checked against the recorded pre-operation state.
 
 Unknown future purposes, or missing state or scope bindings required by a described operation,
-still return **Partial**. The [v2 descriptor](data/openslay-prototype-v2.json)
+still return **Partial**. The [v3 descriptor](data/openslay-prototype-v3.json)
+holds the odds in force before the 2026-11 character balance pass; check those
+transcripts with `--rules openslay-prototype-v3`. The [v2 descriptor](data/openslay-prototype-v2.json)
 holds the odds in force before the 2026-10 character balance pass; check older
 transcripts with `--rules openslay-prototype-v2`. The historical
 [v1 partial descriptor](data/openslay-prototype-v1.partial.json) remains
@@ -287,6 +299,7 @@ presentation as the CLI without changing the underlying report objects.
 | [`cli.py`](cli.py) / [`localization.py`](localization.py) | CLI entry point, stable JSON, and Chinese, English, or bilingual human-readable reporting |
 | [`SPEC.md`](SPEC.md) / [`SPEC.zh-CN.md`](SPEC.zh-CN.md) | Normative public protocol |
 | [`test-vectors/`](test-vectors) | Synthetic, public protocol fixtures—not deployed credentials |
+| [`examples/`](examples) | A synthetic bot match transcript, a resealed forgery of it, and a guide to verifying both |
 
 The repository root is also the `openslay_rng_verifier` package directory. It
 is a complete standalone Python project: no game engine, character

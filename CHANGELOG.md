@@ -3,6 +3,13 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
+## 0.6.0 - 2026-11-02
+
+- Add the bundled `openslay-prototype-v4` descriptor (104 purposes) for the 2026-11 character balance pass and make it what `bundled` loads. `skill.wu.sun-ce.active.damage` moves from 3/4 to 1/2 and `skill.wei.cao-cao.active.lose-rage` from 1/2 to 1/4. New fixed odds are `skill.wei.yue-jin.active.draw-on-damage` (1/4) and `skill.wei.xun-you.control-card-resolved.recover-hp` (3/4). `skill.qun.hua-xiong.active.lose-rage` is removed. Its `public_rules_hash` is `33f4ff27895380ec7671cef35f01b8204a323e1a55d69707e3f1f9e0132fcd1d`.
+- Keep `openslay-prototype-v3` unchanged. `load_ruleset` and `--rules` now also accept `openslay-prototype-v4`, so transcripts recorded before this balance pass still verify with `--rules openslay-prototype-v3`.
+- Breaking for verdicts: against `bundled`, transcripts recorded under the v3 odds now return `Invalid` for the changed purposes. The transcript wire format remains protocol v2.
+- Add [`examples/`](examples/README.md): a synthetic 2v2 training transcript (seed `42`, input `雪`) that verifies as `Verified deterministic` against the bundled rules, a forgery of it, and an English and Chinese guide to verifying both, including recomputing the flipped roll by hand. The forgery flips the last roll, which does not change the match result, and repairs its proof, the deck ledger tail, and both hashes. It passes every check that does not need the seed and fails as `Invalid` at sequence 582 when the roll is recomputed. None of its rolls changed between v3 and v4.
+
 ## 0.5.0 - 2026-10-24
 
 - Add the bundled `openslay-prototype-v3` descriptor (103 purposes) for the 2026-10 character balance pass and make it what `bundled` loads. Twenty fixed skill odds move one 25% step (for example `skill.wu.sun-shang-xiang.active.damage` 3/4 → 1/2 and `skill.shu.fa-zheng.skill-card-target.cancel-card` 1/4 → 1/2), and 26 new fixed-odds purposes describe the new skill rolls, such as `skill.wei.yue-jin.active.gain-rage` (1/2) and `skill.qun.chen-gong.enter-dying.recover-hp` (3/4). Its `public_rules_hash` is `233f269af3013c53f8032356097afe20cb0cb2204cda9d634d3afb2236e04dae`.

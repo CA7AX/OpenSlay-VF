@@ -298,7 +298,7 @@ def verify_metadata(version: str) -> None:
 
 
 def descriptor_is_partial() -> bool:
-    descriptor_path = ROOT / "data" / "openslay-prototype-v3.json"
+    descriptor_path = ROOT / "data" / "openslay-prototype-v4.json"
     descriptor = json.loads(descriptor_path.read_text(encoding="utf-8"))
     allow_partial = descriptor.get("allow_unlisted_purposes") is True
     for readme in (ROOT / "README.md", ROOT / "README.zh-CN.md"):

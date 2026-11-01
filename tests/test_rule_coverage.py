@@ -256,8 +256,26 @@ def test_descriptor_is_self_hashed_and_has_no_catch_all() -> None:
     assert DESCRIPTOR["public_rules_hash"] == descriptor_hash(DESCRIPTOR)
     patterns = [rule["purpose_pattern"] for rule in DESCRIPTOR["operation_rules"] if "purpose_pattern" in rule]
     assert patterns == [r"deck\.epoch\.[1-9][0-9]*"]
-    assert DESCRIPTOR["ruleset_id"] == "openslay-prototype-v3"
-    assert len(DESCRIPTOR["operation_rules"]) == 103
+    assert DESCRIPTOR["ruleset_id"] == "openslay-prototype-v4"
+    assert len(DESCRIPTOR["operation_rules"]) == 104
+
+
+def test_previous_v3_descriptor_stays_bundled_by_ruleset_id() -> None:
+    # Transcripts recorded before the 2026-11 balance pass keep their odds.
+    descriptor = load_ruleset("openslay-prototype-v3")
+    assert descriptor == load_ruleset(ROOT / "data/openslay-prototype-v3.json")
+    assert descriptor["public_rules_hash"] == "233f269af3013c53f8032356097afe20cb0cb2204cda9d634d3afb2236e04dae"
+    assert len(descriptor["operation_rules"]) == 103
+    old = {rule["purpose"]: rule for rule in descriptor["operation_rules"] if "purpose" in rule}
+    assert old["skill.wu.sun-ce.active.damage"]["input_constraints"]["numerator"] == {"equals": 3}
+    assert old["skill.wei.cao-cao.active.lose-rage"]["input_constraints"]["denominator"] == {"equals": 2}
+    assert old["skill.qun.hua-xiong.active.lose-rage"]["input_constraints"]["numerator"] == {"equals": 1}
+    assert "skill.wei.yue-jin.active.draw-on-damage" not in old
+    assert "skill.qun.hua-xiong.active.lose-rage" not in RULES
+    assert RULES["skill.wu.sun-ce.active.damage"]["input_constraints"]["numerator"] == {"equals": 1}
+    assert RULES["skill.wei.cao-cao.active.lose-rage"]["input_constraints"]["denominator"] == {"equals": 4}
+    assert RULES["skill.wei.yue-jin.active.draw-on-damage"]["input_constraints"]["denominator"] == {"equals": 4}
+    assert RULES["skill.wei.xun-you.control-card-resolved.recover-hp"]["input_constraints"]["numerator"] == {"equals": 3}
 
 
 def test_previous_v2_descriptor_stays_bundled_by_ruleset_id() -> None:
