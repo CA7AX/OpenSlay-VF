@@ -38,6 +38,7 @@ REQUIRED_PACKAGE_FILES = {
     "data/openslay-prototype-v3.json",
     "data/openslay-prototype-v4.json",
     "data/openslay-prototype-v5.json",
+    "data/openslay-prototype-v6.json",
     "SPEC.md",
     "SPEC.zh-CN.md",
     "test-vectors/protocol-v2.json",
@@ -174,7 +175,7 @@ def install_and_smoke_test(wheel: Path, sdist: Path, version: str) -> None:
             capture_output=True,
             check=False,
         )
-        expected = {"version": version, "rules": "openslay-prototype-v5"}
+        expected = {"version": version, "rules": "openslay-prototype-v6"}
         try:
             imported_payload = json.loads(imported.stdout)
         except json.JSONDecodeError:

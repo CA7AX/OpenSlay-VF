@@ -26,6 +26,7 @@ data/openslay-prototype-v2.json
 data/openslay-prototype-v3.json
 data/openslay-prototype-v4.json
 data/openslay-prototype-v5.json
+data/openslay-prototype-v6.json
 data/prototype-deck-v1.json
 deck_ledger.py
 examples/README.md

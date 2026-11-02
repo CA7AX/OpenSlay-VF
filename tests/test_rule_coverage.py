@@ -256,10 +256,30 @@ def test_descriptor_is_self_hashed_and_has_no_catch_all() -> None:
     assert DESCRIPTOR["public_rules_hash"] == descriptor_hash(DESCRIPTOR)
     patterns = [rule["purpose_pattern"] for rule in DESCRIPTOR["operation_rules"] if "purpose_pattern" in rule]
     assert patterns == [r"deck\.epoch\.[1-9][0-9]*"]
-    assert DESCRIPTOR["ruleset_id"] == "openslay-prototype-v5"
-    assert len(DESCRIPTOR["operation_rules"]) == 105
-    assert RULES["skill.qun.li-ru.active.gain-rage"]["input_constraints"]["numerator"] == {"equals": 3}
-    assert RULES["skill.qun.li-ru.active.gain-rage"]["input_constraints"]["denominator"] == {"equals": 4}
+    assert DESCRIPTOR["ruleset_id"] == "openslay-prototype-v6"
+    assert len(DESCRIPTOR["operation_rules"]) == 106
+    assert RULES["skill.wu.sun-quan.active.lose-rage"]["input_constraints"]["numerator"] == {"equals": 1}
+    assert RULES["skill.wu.sun-quan.active.lose-rage"]["input_constraints"]["denominator"] == {"equals": 2}
+    assert RULES["skill.wei.yue-jin.active.gain-rage"]["input_constraints"]["denominator"] == {"equals": 4}
+    assert RULES["skill.qun.zhu-rong-fu-ren.active.lose-hp"]["input_constraints"]["denominator"] == {"equals": 4}
+    assert RULES["skill.wu.sun-quan.active.target-rage"]["input_constraints"]["numerator"] == {"equals": 3}
+
+
+def test_previous_v5_descriptor_stays_bundled_by_ruleset_id() -> None:
+    # Transcripts recorded before the 2026-11-02 round-3 pass keep their odds.
+    descriptor = load_ruleset("openslay-prototype-v5")
+    assert descriptor == load_ruleset(ROOT / "data/openslay-prototype-v5.json")
+    assert descriptor["public_rules_hash"] == "c8a8cf62c7662bf6da9947954b434dd58166c8fbb163ea5bbbf04f0a287e692a"
+    assert len(descriptor["operation_rules"]) == 105
+    old = {rule["purpose"]: rule for rule in descriptor["operation_rules"] if "purpose" in rule}
+    assert "skill.wu.sun-quan.active.lose-rage" not in old
+    assert old["skill.wei.yue-jin.active.gain-rage"]["input_constraints"]["numerator"] == {"equals": 1}
+    assert old["skill.wei.yue-jin.active.gain-rage"]["input_constraints"]["denominator"] == {"equals": 2}
+    assert old["skill.qun.zhu-rong-fu-ren.active.lose-hp"]["input_constraints"]["denominator"] == {"equals": 2}
+    assert old["skill.wu.sun-quan.active.target-rage"]["input_constraints"]["numerator"] == {"equals": 3}
+    assert RULES["skill.wei.yue-jin.active.gain-rage"]["input_constraints"]["denominator"] == {"equals": 4}
+    assert RULES["skill.qun.zhu-rong-fu-ren.active.lose-hp"]["input_constraints"]["denominator"] == {"equals": 4}
+    assert RULES["skill.wu.sun-quan.active.lose-rage"]["input_constraints"]["denominator"] == {"equals": 2}
 
 
 def test_previous_v4_descriptor_stays_bundled_by_ruleset_id() -> None:
