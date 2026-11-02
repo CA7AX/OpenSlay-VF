@@ -3,6 +3,12 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
+## 0.7.0 - 2026-11-02
+
+- Add the bundled `openslay-prototype-v5` descriptor (105 purposes) for the 2026-11-02 round-2 character balance pass and make it what `bundled` loads. The only new fixed odd is `skill.qun.li-ru.active.gain-rage` (3/4). Every v4 purpose and fraction is unchanged. Its `public_rules_hash` is `c8a8cf62c7662bf6da9947954b434dd58166c8fbb163ea5bbbf04f0a287e692a`.
+- Keep `openslay-prototype-v4` unchanged. `load_ruleset` and `--rules` now also accept `openslay-prototype-v5`, so transcripts recorded before this round still verify with `--rules openslay-prototype-v4`.
+- Breaking for verdicts: against `bundled`, a transcript that rolls `skill.qun.li-ru.active.gain-rage` was Partial under v4 and is checked at 3/4 under v5. Transcripts that do not use that purpose still verify. The transcript wire format remains protocol v2.
+
 ## 0.6.0 - 2026-11-02
 
 - Add the bundled `openslay-prototype-v4` descriptor (104 purposes) for the 2026-11 character balance pass and make it what `bundled` loads. `skill.wu.sun-ce.active.damage` moves from 3/4 to 1/2 and `skill.wei.cao-cao.active.lose-rage` from 1/2 to 1/4. New fixed odds are `skill.wei.yue-jin.active.draw-on-damage` (1/4) and `skill.wei.xun-you.control-card-resolved.recover-hp` (3/4). `skill.qun.hua-xiong.active.lose-rage` is removed. Its `public_rules_hash` is `33f4ff27895380ec7671cef35f01b8204a323e1a55d69707e3f1f9e0132fcd1d`.
