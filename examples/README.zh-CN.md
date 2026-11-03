@@ -13,7 +13,7 @@
 
 这是一局合成对局：四个规则机器人进行 2v2 训练对局（貂蝉、太史慈对庞统、孙权），数值种子为 `42`，公开随机输入为 `雪`。没有真人参与。蓝方（庞统、孙权）获胜。
 
-两个文件都是紧凑策牒：一个 JSON 对象，其 `records` 列表只保留游戏日志中的随机性记录，即 1 条 `randomness_manifest`、22 次 `randomness` 操作和 1 条 `randomness_reveal`。每条记录的 `sequence` 是它在原始游戏日志中的行号，因此编号并不连续。每次操作都保留了它所绑定的引擎状态，所以文件较大（各约 740 KB）。这些记录采用 2026-10 平衡调整后的概率。其中的掷骰没有出现在 2026-11 的改动里，也没有用到 2026-11-02 第二轮新增的 `skill.qun.li-ru.active.gain-rage`（3/4），因此仍可对照随包规则核验。用到已改概率的策牒请使用 `--rules openslay-prototype-v3`；若只差这一条新用途，请使用 `--rules openslay-prototype-v4`。
+两个文件都是紧凑策牒：一个 JSON 对象，其 `records` 列表只保留游戏日志中的随机性记录，即 1 条 `randomness_manifest`、22 次 `randomness` 操作和 1 条 `randomness_reveal`。每条记录的 `sequence` 是它在原始游戏日志中的行号，因此编号并不连续。每次操作都保留了它所绑定的引擎状态，所以文件较大（各约 740 KB）。这些记录采用 2026-10 平衡调整后的概率，仍与 `openslay-prototype-v6` 相符。随包 v7 把举贤任能的受赠怒气（`skill.wu.sun-quan.active.target-rage`）从 3/4 改为 1/2，因此核对本策牒请使用 `--rules openslay-prototype-v6`。
 
 训练策牒会公开种子，任何人都能重算每一次掷骰。因此它证明的是策牒内部一致、可以复现，而不能证明服务器诚实；联机协议另外用承诺和玩家随机数来解决这一点。参见[验证不能证明的内容](../README.zh-CN.md)。
 
@@ -66,7 +66,7 @@ diff 会列出上表中的七处改动。Windows 上可用 `fc` 代替 `diff`。
 ### 3. 验证真实策牒
 
 ```bash
-openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled --language zh
+openslay-rng-verify examples/training-2v2-seed42.valid.json --rules openslay-prototype-v6 --language zh
 ```
 
 ```text
@@ -88,7 +88,7 @@ openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled --la
 ### 4. 验证伪造策牒
 
 ```bash
-openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules bundled --language zh
+openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules openslay-prototype-v6 --language zh
 ```
 
 ```text

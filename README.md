@@ -150,8 +150,8 @@ bot match and a forged copy that flips a roll without changing the match
 result and reseals every hash:
 
 ```bash
-openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled
-openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules bundled
+openslay-rng-verify examples/training-2v2-seed42.valid.json --rules openslay-prototype-v6
+openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules openslay-prototype-v6
 ```
 
 Add a local witness, request stable JSON, or select a report language:
@@ -203,7 +203,7 @@ formulas are normative in [SPEC.md](SPEC.md).
 
 Public data-only descriptors can constrain an operation's `purpose`, type, and
 inputs without publishing the event engine that implements the rule. The
-[bundled prototype descriptor](data/openslay-prototype-v6.json) covers all 106
+[bundled prototype descriptor](data/openslay-prototype-v7.json) covers all 106
 current operation purposes. It checks fixed skill odds, roster membership and
 counts, the ordered 5p/8p hidden-role shuffle pools (excluding the lord), the
 identity draft's seat draw and general hands, control-card and suit pools, and candidates against recorded hands,
@@ -211,7 +211,9 @@ equipment, debuffs, and living neighbors. Horse-count and environment-counter
 probabilities are checked against the recorded pre-operation state.
 
 Unknown future purposes, or missing state or scope bindings required by a described operation,
-still return **Partial**. The [v5 descriptor](data/openslay-prototype-v5.json)
+still return **Partial**. The [v6 descriptor](data/openslay-prototype-v6.json)
+holds the odds in force before 举贤任能's recipient rage grant moved from 3/4 to 1/2; check those
+transcripts with `--rules openslay-prototype-v6`. The [v5 descriptor](data/openslay-prototype-v5.json)
 holds the odds in force before the 2026-11-02 round-3 balance pass; check those
 transcripts with `--rules openslay-prototype-v5`. The [v4 descriptor](data/openslay-prototype-v4.json)
 holds the odds in force before the 2026-11-02 round-2 balance pass; check those

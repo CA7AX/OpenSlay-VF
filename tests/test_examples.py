@@ -49,7 +49,9 @@ def test_valid_example_verifies_against_bundled_rules() -> None:
     assert report.final_audit_hash == (
         "09bee98039744b8a1d4a3c4dbf146a88e5f86818428e86d64e7a2eb0017ed5a9"
     )
-    assert verify_declared_rules(report, load_ruleset("bundled")).status == "Verified"
+    # The sample rolls 举贤任能 at 3/4. That grant is 1/2 in the bundled v7 rules.
+    assert verify_declared_rules(report, load_ruleset("openslay-prototype-v6")).status == "Verified"
+    assert verify_declared_rules(report, load_ruleset("bundled")).status == "Invalid"
 
 
 def test_tampered_example_is_the_valid_file_with_its_last_roll_resealed() -> None:

@@ -25,12 +25,10 @@ only the randomness records from the game log. These are one
 Each `sequence` is the record's line number in the original game log, so the
 numbers have gaps. Every operation keeps the engine state it was bound to,
 which is why the files are large (about 740 KB each). The records were made
-under the 2026-10 balance odds. None of their rolls changed in the 2026-11
-pass or the 2026-11-02 round, which only adds
-`skill.qun.li-ru.active.gain-rage` at 3/4, so they still check against the
-bundled rules. A transcript that uses a changed roll needs
-`--rules openslay-prototype-v3`, or `--rules openslay-prototype-v4` when the
-only difference is the new 李儒 purpose.
+under the 2026-10 balance odds. They still match `openslay-prototype-v6`.
+Bundled v7 changes 举贤任能's recipient rage grant
+(`skill.wu.sun-quan.active.target-rage`) from 3/4 to 1/2, so check this
+transcript with `--rules openslay-prototype-v6`.
 
 A training transcript discloses its seed. Anyone can recompute every roll, so
 the transcript proves it is internally consistent and reproducible. It does not
@@ -104,7 +102,7 @@ instead of `diff`.
 ### 3. Verify the honest transcript
 
 ```bash
-openslay-rng-verify examples/training-2v2-seed42.valid.json --rules bundled --language en
+openslay-rng-verify examples/training-2v2-seed42.valid.json --rules openslay-prototype-v6 --language en
 ```
 
 ```text
@@ -131,7 +129,7 @@ against the public rules.
 ### 4. Verify the forgery
 
 ```bash
-openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules bundled --language en
+openslay-rng-verify examples/training-2v2-seed42.tampered-careful.json --rules openslay-prototype-v6 --language en
 ```
 
 ```text

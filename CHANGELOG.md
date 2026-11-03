@@ -3,6 +3,12 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
+## 0.9.0 - 2026-11-03
+
+- Add the bundled `openslay-prototype-v7` descriptor (106 purposes) and make it what `bundled` loads. `skill.wu.sun-quan.active.target-rage` moves from 3/4 to 1/2. Every other v6 purpose and fraction is unchanged. Its `public_rules_hash` is `a1afbd694067cf8131f5e31dad9fdb2d63ebdca58ac2e778e2a9f2e7818a1ef8`.
+- Keep `openslay-prototype-v6` unchanged. `load_ruleset` and `--rules` now also accept `openslay-prototype-v7`, so transcripts recorded before this change still verify with `--rules openslay-prototype-v6`.
+- Breaking for verdicts: against `bundled`, transcripts recorded under the v6 3/4 odds for `skill.wu.sun-quan.active.target-rage` now return `Invalid`. Transcripts that do not use that purpose still verify. The transcript wire format remains protocol v2.
+
 ## 0.8.0 - 2026-11-02
 
 - Add the bundled `openslay-prototype-v6` descriptor (106 purposes) for the 2026-11-02 round-3 character balance pass and make it what `bundled` loads. The new fixed odd is `skill.wu.sun-quan.active.lose-rage` (1/2). `skill.wei.yue-jin.active.gain-rage` and `skill.qun.zhu-rong-fu-ren.active.lose-hp` move from 1/2 to 1/4. Every other v5 purpose and fraction is unchanged. Its `public_rules_hash` is `2795e987aa499dda6c3f39b3350f1c6034c8f80ade5b21afde327c233bce88bd`.
