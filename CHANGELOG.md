@@ -3,6 +3,10 @@
 All notable changes to the public verifier are recorded here. Package releases
 follow semantic versioning independently from transcript protocol versions.
 
+## Unreleased
+
+- 乱世鬼谋's extra draw and 落凤之诫's heal are deterministic. They add no purpose and change no fraction. Bundled odds remain `openslay-prototype-v7`. `skill.shu.pang-tong.take-skill-damage.discard-source-hand` stays 3/4. v7's `public_rules_hash` is unchanged, so transcripts recorded under v7 still verify against `bundled`.
+
 ## 0.9.0 - 2026-11-03
 
 - Add the bundled `openslay-prototype-v7` descriptor (106 purposes) and make it what `bundled` loads. `skill.wu.sun-quan.active.target-rage` moves from 3/4 to 1/2. Every other v6 purpose and fraction is unchanged. Its `public_rules_hash` is `a1afbd694067cf8131f5e31dad9fdb2d63ebdca58ac2e778e2a9f2e7818a1ef8`.

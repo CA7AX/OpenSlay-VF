@@ -204,7 +204,9 @@ formulas are normative in [SPEC.md](SPEC.md).
 Public data-only descriptors can constrain an operation's `purpose`, type, and
 inputs without publishing the event engine that implements the rule. The
 [bundled prototype descriptor](data/openslay-prototype-v7.json) covers all 106
-current operation purposes. It checks fixed skill odds, roster membership and
+current operation purposes. The 2026-11-07 changes to 乱世鬼谋 and 落凤之诫 add no
+purpose: the extra draw and the heal are deterministic, and
+`skill.shu.pang-tong.take-skill-damage.discard-source-hand` stays 3/4. The descriptor checks fixed skill odds, roster membership and
 counts, the ordered 5p/8p hidden-role shuffle pools (excluding the lord), the
 identity draft's seat draw and general hands, control-card and suit pools, and candidates against recorded hands,
 equipment, debuffs, and living neighbors. Horse-count and environment-counter
